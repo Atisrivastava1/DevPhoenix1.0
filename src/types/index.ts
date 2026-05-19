@@ -24,7 +24,9 @@ export interface ProgramPricing {
   period?: string;
   discountMessage?: string;
   // Fields from enriched JSON
+  original_price?: string;
   originalPrice?: string;
+  discounted_price?: string;
   discountedPrice?: string;
   emi?: string | null;
   includes?: string[];
@@ -41,7 +43,8 @@ export interface Program {
   duration: string;
   type: string;            // relaxed from union
   price: string;
-  practicalHours: string;
+  practical_hours: string;
+  practicalHours?: string;
   tags: string[];
   image: string;
   outcomes: string[];
@@ -50,6 +53,7 @@ export interface Program {
   // Rich content
   curriculum?: ProgramModule[];
   faqs?: ProgramFAQ[];
+  pricing_details?: ProgramPricing;
   pricingDetails?: ProgramPricing;
   tools?: string[];
   certifications?: string[];
@@ -64,9 +68,9 @@ export interface Blog {
   title: string;
   excerpt: string;
   content: string;
-  coverImage: string;
-  publishedAt: string;
-  readTime: string;
+  cover_image: string;
+  published_at: string;
+  read_time: string;
   category: string;
   tags: string[];
   author: {
@@ -74,7 +78,7 @@ export interface Blog {
     avatar: string;
     role: string;
   };
-  isPublished: boolean;
+  is_published: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -98,7 +102,7 @@ export interface Mentor {
   status: 'online' | 'away' | 'offline';
   avatar: string;
   tags: string[];
-  isVerified: boolean;
+  is_verified: boolean;
   followers: number;
   created_at?: string;
 }
@@ -118,7 +122,8 @@ export interface Lead {
   email: string;
   phone: string;
   program: string;
-  currentStatus: string; // Student, Working Professional, etc.
+  current_status?: string; // Student, Working Professional, etc.
+  currentStatus?: string;
   message?: string;
   source_page?: string;
   source_campaign?: string;
@@ -171,9 +176,15 @@ export interface ProjectShowcase {
   description: string;
   image: string;
   tags: string[];
+  github_url?: string;
   githubUrl?: string;
+  live_url?: string;
   liveUrl?: string;
-  authorName: string;
-  programName: string;
+  author_name?: string;
+  authorName?: string;
+  student?: string;
+  program_name?: string;
+  programName?: string;
+  category?: string;
   created_at?: string;
 }

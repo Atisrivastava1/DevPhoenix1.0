@@ -21,7 +21,7 @@ const EMPTY_FAQ = { question: '', answer: '' };
 
 const EMPTY = {
   id: '', title: '', description: '', overview: '', category: 'Development', level: 'Beginner',
-  duration: '4-6 Months', type: 'Premium', price: '', practicalHours: '100+ Hours',
+  duration: '4-6 Months', type: 'Premium', price: '', practical_hours: '100+ Hours',
   tags: '', image: '', outcomes: '', projects: 10,
   // rich fields
   curriculum: [] as any[], faqs: [] as any[],
@@ -45,7 +45,13 @@ export default function AdminPrograms() {
   const [newModule, setNewModule] = useState(EMPTY_MODULE);
   const [newFaq, setNewFaq] = useState(EMPTY_FAQ);
 
-  const load = () => fetch('/api/programs', { cache: 'no-store' }).then(r => r.json()).then(d => setPrograms(Array.isArray(d) ? d : [])).catch(() => {});
+  const load = () => fetch('/api/programs', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(d => {
+      const items = d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+      setPrograms(items);
+    })
+    .catch(() => {});
 
   useEffect(() => { load(); }, []);
 
@@ -62,10 +68,10 @@ export default function AdminPrograms() {
       outcomes: Array.isArray(p.outcomes) ? p.outcomes.join('\n') : p.outcomes || '',
       curriculum: p.curriculum || [],
       faqs: p.faqs || [],
-      originalPrice: p.pricingDetails?.originalPrice || '',
-      discountedPrice: p.pricingDetails?.discountedPrice || p.price || '',
-      emi: p.pricingDetails?.emi || '',
-      includes: Array.isArray(p.pricingDetails?.includes) ? p.pricingDetails.includes.join('\n') : '',
+      originalPrice: p.pricing_details?.originalPrice || '',
+      discountedPrice: p.pricing_details?.discountedPrice || p.price || '',
+      emi: p.pricing_details?.emi || '',
+      includes: Array.isArray(p.pricing_details?.includes) ? p.pricing_details.includes.join('\n') : '',
     });
     setEditing(p);
     setActiveTab('basic');
@@ -102,7 +108,7 @@ export default function AdminPrograms() {
       showToast('Display price is required!', 'error');
       return;
     }
-    if (!form.practicalHours?.trim()) {
+    if (!form.practical_hours?.trim()) {
       showToast('Practical hours count is required!', 'error');
       return;
     }
@@ -130,7 +136,7 @@ export default function AdminPrograms() {
       projects: Number(form.projects),
       curriculum: form.curriculum || [],
       faqs: form.faqs || [],
-      pricingDetails: {
+      pricing_details: {
         originalPrice: form.originalPrice,
         discountedPrice: form.discountedPrice || form.price,
         emi: form.emi || null,
@@ -143,7 +149,7 @@ export default function AdminPrograms() {
       const data = await res.json();
       
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to save program details.');
+        throw new Error(data.error?.message || data.error || 'Failed to save program details.');
       }
       
       showToast(`Program "${form.title}" saved successfully!`, 'success');
@@ -292,9 +298,9 @@ export default function AdminPrograms() {
                   
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
                     <div>
-                      <span className="text-base font-extrabold text-orange-600">{p.pricingDetails?.discountedPrice || p.price}</span>
-                      {p.pricingDetails?.originalPrice && (
-                        <span className="text-xs text-slate-400 line-through ml-2">{p.pricingDetails.originalPrice}</span>
+                      <span className="text-base font-extrabold text-orange-600">{p.pricing_details?.discountedPrice || p.price}</span>
+                      {p.pricing_details?.originalPrice && (
+                        <span className="text-xs text-slate-400 line-through ml-2">{p.pricing_details.originalPrice}</span>
                       )}
                     </div>
                     
@@ -367,7 +373,7 @@ export default function AdminPrograms() {
               <Field label="Category"><Select value={form.category} onChange={f('category')}><option>Development</option><option>Cloud & DevOps</option><option>Data & AI</option><option>AI & Automation</option><option>Marketing & Growth</option><option>Computer Science</option><option>Productivity & Tools</option><option>Business & Strategy</option></Select></Field>
               <Field label="Level"><Select value={form.level} onChange={f('level')}><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Beginner to Advanced</option><option>All Levels</option></Select></Field>
               <Field label="Duration"><Input value={form.duration} onChange={f('duration')} placeholder="4-6 Months" /></Field>
-              <Field label="Practical Hours"><Input value={form.practicalHours} onChange={f('practicalHours')} placeholder="100+ Hours" /></Field>
+              <Field label="Practical Hours"><Input value={form.practical_hours} onChange={f('practical_hours')} placeholder="100+ Hours" /></Field>
               <Field label="Projects Count"><Input type="number" value={form.projects} onChange={f('projects')} /></Field>
             </div>
             <Field label="Tags (comma-separated)"><Input value={form.tags} onChange={f('tags')} placeholder="React, Node.js, AWS" /></Field>

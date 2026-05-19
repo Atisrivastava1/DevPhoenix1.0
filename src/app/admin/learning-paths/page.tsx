@@ -21,7 +21,8 @@ export default function AdminLearningPathsPage() {
       console.log('Fetching latest learning paths from /api/learning-paths...');
       const res = await fetch('/api/learning-paths', { cache: 'no-store' });
       const data = await res.json();
-      setPaths(Array.isArray(data) ? data : []);
+      const list = data.success && Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
+      setPaths(list);
     } catch (e) {
       console.error('Failed to load learning paths:', e);
     } finally {

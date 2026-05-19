@@ -15,7 +15,7 @@ import { showToast } from '@/components/ui/PremiumToast';
 import { ConfirmDeleteModal } from '@/components/admin/ConfirmDeleteModal';
 
 
-const EMPTY = { id: '', slug: '', title: '', excerpt: '', category: 'AI & Automation', readTime: '5 min read', date: '', image: '', content: '', published: true, author: { name: 'DevPhoeniX Team', role: 'Engineering', avatar: '/logo/devphoenix-logo.png' } };
+const EMPTY = { id: '', slug: '', title: '', excerpt: '', category: 'AI & Automation', read_time: '5 min read', published_at: '', cover_image: '', content: '', is_published: true, author: { name: 'DevPhoeniX Team', role: 'Engineering', avatar: '/logo/devphoenix-logo.png' } };
 
 export default function AdminBlog() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -25,11 +25,18 @@ export default function AdminBlog() {
   const [loading, setLoading] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  const load = () => fetch('/api/blog', { cache: 'no-store' }).then(r => r.json()).then(d => setPosts(Array.isArray(d) ? d : [])).catch(() => {});
+  const load = () => fetch('/api/blog', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(d => {
+      // Unwrap standard envelope { success: true, data: [...] }
+      const items = d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+      setPosts(items);
+    })
+    .catch(() => {});
 
   useEffect(() => { load(); }, []);
 
-  const openNew = () => { setForm({ ...EMPTY, date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) }); setEditing(null); setModalOpen(true); };
+  const openNew = () => { setForm({ ...EMPTY, published_at: new Date().toISOString() }); setEditing(null); setModalOpen(true); };
   const openEdit = (p: any) => { setForm(p); setEditing(p); setModalOpen(true); };
   const f = (field: string) => (e: any) => setForm((prev: any) => ({ ...prev, [field]: e.target.value }));
 
@@ -57,7 +64,7 @@ export default function AdminBlog() {
       const res = await fetch('/api/blog', { method: editing ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to save article.');
+        throw new Error(data.error?.message || data.error || 'Failed to save article.');
       }
       showToast(`Article "${form.title}" published/saved successfully!`, 'success');
       setModalOpen(false);
@@ -116,15 +123,15 @@ export default function AdminBlog() {
               transition={{ duration: 0.2 }}
             >
               <Card variant="glass" padding="sm" className="flex items-center gap-4 group border border-slate-100/50">
-                {post.image && (
+                {post.cover_image && (
                   <div className="relative w-20 h-16 rounded-xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
-                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+                    <img src={post.cover_image} alt={post.title} className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
                     <Badge variant="orange">{post.category}</Badge>
-                    <span className="text-xs text-slate-400 font-medium">{post.readTime}</span>
+                    <span className="text-xs text-slate-400 font-medium">{post.read_time}</span>
                   </div>
                   <h3 className="font-extrabold text-slate-900 truncate leading-snug">{post.title}</h3>
                   <p className="text-xs text-slate-500 line-clamp-1 mt-0.5 leading-relaxed">{post.excerpt}</p>
@@ -165,9 +172,9 @@ export default function AdminBlog() {
         <Field label="Excerpt"><Textarea value={form.excerpt} onChange={f('excerpt')} rows={2} placeholder="A short summary shown on the blog listing page..." /></Field>
         <div className="grid grid-cols-2 gap-4">
           <Field label="Category"><Select value={form.category} onChange={f('category')}><option>AI & Automation</option><option>Builder Journey</option><option>Cloud & DevOps</option><option>Data Science</option><option>Career</option></Select></Field>
-          <Field label="Read Time"><Input value={form.readTime} onChange={f('readTime')} placeholder="8 min read" /></Field>
+          <Field label="Read Time"><Input value={form.read_time} onChange={f('read_time')} placeholder="8 min read" /></Field>
         </div>
-        <ImagePicker value={form.image} onChange={url => setForm((p: any) => ({ ...p, image: url }))} label="Cover Image" />
+        <ImagePicker value={form.cover_image} onChange={url => setForm((p: any) => ({ ...p, cover_image: url }))} label="Cover Image" />
         <Field label="Content (HTML)" required>
           <Textarea value={form.content} onChange={f('content')} rows={10} placeholder="<h2>Introduction</h2><p>Your article content here...</p>" className="font-mono text-xs" />
         </Field>

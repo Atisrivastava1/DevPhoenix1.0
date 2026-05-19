@@ -19,22 +19,37 @@ import { courseJsonLd, faqJsonLd, breadcrumbJsonLd, organizationJsonLd } from "@
 
 // ─── Data fetching ─────────────────────────────────────────────────────────────
 async function getProgramBySlug(slug: string): Promise<Program | null> {
+  let program: any = null;
   if (!hasSupabaseConfig) {
     try {
       const data = JSON.parse(readFileSync(join(process.cwd(), 'src/data/programs-dynamic.json'), 'utf-8'));
-      return data.find((p: any) => p.slug === slug || p.id === slug) || null;
+      program = data.find((p: any) => p.slug === slug || p.id === slug) || null;
     } catch {
       try {
         const data = JSON.parse(readFileSync(join(process.cwd(), 'src/data/programs-static.json'), 'utf-8'));
-        return data.find((p: any) => p.slug === slug || p.id === slug) || null;
+        program = data.find((p: any) => p.slug === slug || p.id === slug) || null;
       } catch { return null; }
     }
+  } else {
+    try {
+      program = await programsService.getBySlug(slug);
+    } catch {
+      return null;
+    }
   }
-  try {
-    return await programsService.getBySlug(slug);
-  } catch {
-    return null;
-  }
+
+  if (!program) return null;
+
+  return {
+    ...program,
+    practical_hours: program.practical_hours || program.practicalHours || "100+ Hours",
+    pricing_details: program.pricing_details || program.pricingDetails || {
+      originalPrice: program.originalPrice || "",
+      discountedPrice: program.discountedPrice || program.price || "",
+      emi: program.emi || null,
+      includes: Array.isArray(program.includes) ? program.includes : []
+    }
+  };
 }
 
 // ─── Dynamic Metadata ─────────────────────────────────────────────────────────

@@ -1,29 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { NextRequest } from 'next/server';
 import { siteConfigService } from '@/services/supabase/db.service';
 import { hasSupabaseConfig } from '@/services/supabase/client';
-import { sanitizePayload } from '@/lib/api/sanitize-payload';
+import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
+import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
 
 export const dynamic = 'force-dynamic';
 
-const FILE_PATH = join(process.cwd(), 'src/data/site-config.json');
-
-function read() {
-  try { return JSON.parse(readFileSync(FILE_PATH, 'utf-8')); }
-  catch { return {}; }
-}
+const cache = getLocalCacheHelper<any>('site-config.json', undefined, {} as any);
 
 export async function GET() {
   if (hasSupabaseConfig) {
     try {
       const config = await siteConfigService.get();
-      if (config) return NextResponse.json(config);
+      if (config) return apiResponse.success(config);
     } catch (err: any) {
       console.error('Supabase site-config GET error, falling back to local:', err);
     }
   }
-  return NextResponse.json(read());
+  return apiResponse.success(cache.read());
 }
 
 export async function PUT(req: NextRequest) {
@@ -31,42 +25,36 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     
     // Sanitize and validate payload
-    const sanitized = sanitizePayload.siteConfig(body);
+    let sanitized: any;
+    try {
+      sanitized = sanitizePayload.siteConfig(body);
+    } catch (valErr: any) {
+      if (valErr instanceof ValidationError) {
+        console.warn("⚠️ [PUT /api/site-config] Validation Failed:", valErr.message);
+        return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+      }
+      throw valErr;
+    }
 
     if (hasSupabaseConfig) {
       console.log("[SITE CONFIG API PUT PAYLOAD]", JSON.stringify(sanitized, null, 2));
       try {
         const updatedConfig = await siteConfigService.update(sanitized);
         console.log("[SITE CONFIG API PUT SUCCESS]", JSON.stringify(updatedConfig, null, 2));
-        return NextResponse.json(updatedConfig);
+        return apiResponse.success(updatedConfig);
       } catch (dbErr: any) {
         console.error('[SITE CONFIG API PUT SUPABASE ERROR]', dbErr);
-        return NextResponse.json(
-          {
-            success: false,
-            error: dbErr.message || "Database site-config update failed",
-            details: dbErr
-          },
-          { status: 500 }
-        );
+        return apiResponse.error(dbErr.message || "Database update failed", "DATABASE_UPDATE_FAILED", dbErr);
       }
     }
 
     console.log("[SITE CONFIG API local cache save]");
-    const current = read();
+    const current = cache.read();
     const updated = { ...current, ...sanitized };
-    writeFileSync(FILE_PATH, JSON.stringify(updated, null, 2));
-    return NextResponse.json(updated);
+    cache.write(updated);
+    return apiResponse.success(updated);
   } catch (error: any) {
     console.error("[SITE CONFIG API PUT SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: error.status || 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
-

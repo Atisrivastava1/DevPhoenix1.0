@@ -84,7 +84,7 @@ export function ProgramHero({ program, onScrollToCurriculum, onEnroll }: Program
                 <Users className="w-5 h-5 text-orange-500" />
                 <div>
                   <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Practical</p>
-                  <p className="text-sm font-semibold text-white">{program.practicalHours}</p>
+                  <p className="text-sm font-semibold text-white">{program.practical_hours || (program as any).practicalHours}</p>
                 </div>
               </div>
             </motion.div>

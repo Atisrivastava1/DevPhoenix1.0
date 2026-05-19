@@ -5,7 +5,7 @@ import { Plus, Edit2, Trash2, Search, Layers, ExternalLink, Inbox } from 'lucide
 import FormModal, { Field, Input, Textarea } from '@/components/admin/FormModal';
 import VisualBlockManager from '@/components/admin/VisualBlockManager';
 
-const EMPTY = { title: '', description: '', category: '', image: '', liveUrl: '', githubUrl: '', tags: '', student: '' };
+const EMPTY = { title: '', description: '', category: '', image: '', live_url: '', github_url: '', tags: '', student: '' };
 
 export default function AdminShowcasePage() {
   const [items, setItems] = useState<any[]>([]);
@@ -17,9 +17,14 @@ export default function AdminShowcasePage() {
 
   const load = async () => {
     setLoading(true);
-    const data = await fetch('/api/showcase', { cache: 'no-store' }).then(r => r.json()).catch(() => []);
-
-    setItems(Array.isArray(data) ? data : []);
+    try {
+      const res = await fetch('/api/showcase', { cache: 'no-store' });
+      const d = await res.json();
+      const data = d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+      setItems(data);
+    } catch {
+      setItems([]);
+    }
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
@@ -97,8 +102,8 @@ export default function AdminShowcasePage() {
                 <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors">
                   <Edit2 className="w-3.5 h-3.5" /> Edit
                 </button>
-                {item.liveUrl && (
-                  <a href={item.liveUrl} target="_blank" rel="noopener noreferrer" className="p-2 rounded-xl bg-slate-800 hover:bg-orange-500/10 text-slate-400 hover:text-orange-400 transition-colors">
+                {item.live_url && (
+                  <a href={item.live_url} target="_blank" rel="noopener noreferrer" className="p-2 rounded-xl bg-slate-800 hover:bg-orange-500/10 text-slate-400 hover:text-orange-400 transition-colors">
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 )}
@@ -122,8 +127,8 @@ export default function AdminShowcasePage() {
           </div>
           <Field label="Cover Image URL"><Input value={form.image} onChange={f('image')} placeholder="https://..." /></Field>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Live URL"><Input value={form.liveUrl} onChange={f('liveUrl')} placeholder="https://..." /></Field>
-            <Field label="GitHub URL"><Input value={form.githubUrl} onChange={f('githubUrl')} placeholder="https://github.com/..." /></Field>
+            <Field label="Live URL"><Input value={form.live_url} onChange={f('live_url')} placeholder="https://..." /></Field>
+            <Field label="GitHub URL"><Input value={form.github_url} onChange={f('github_url')} placeholder="https://github.com/..." /></Field>
           </div>
           <Field label="Tech Tags (comma-separated)"><Input value={form.tags} onChange={f('tags')} placeholder="React, Node.js, AWS" /></Field>
         </FormModal>

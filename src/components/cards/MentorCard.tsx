@@ -7,7 +7,8 @@ interface MentorCardProps {
 }
 
 export function MentorCard({ mentor }: MentorCardProps) {
-  const { name, role, status, avatar, tags = [], isVerified, followers } = mentor;
+  const { name, role, status, avatar, tags = [], followers } = mentor;
+  const isVerified = mentor.is_verified || (mentor as any).isVerified;
 
   return (
     <div className="group relative overflow-hidden rounded-[2rem] bg-white p-6 w-full max-w-[320px] mx-auto shadow-[12px_12px_24px_rgba(0,0,0,0.05),-12px_-12px_24px_rgba(255,255,255,0.9)] transition-all duration-500 hover:shadow-[20px_20px_40px_rgba(249,115,22,0.1),-20px_-20px_40px_rgba(255,255,255,1)] hover:scale-105 hover:-translate-y-2 border border-slate-100">

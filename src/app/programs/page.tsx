@@ -22,14 +22,26 @@ export default function ProgramsPage() {
     fetch('/api/programs', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setPrograms(data);
-        } else {
-          setPrograms(programsData);
-        }
+        const raw = data.success && Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
+        const list = raw.length > 0 ? raw : programsData;
+        setPrograms(list.map((p: any) => ({
+          ...p,
+          practical_hours: p.practical_hours || p.practicalHours || "100+ Hours",
+          pricing_details: p.pricing_details || p.pricingDetails || {
+            discountedPrice: p.discountedPrice || p.price,
+            originalPrice: p.originalPrice || ""
+          }
+        })));
       })
       .catch(() => {
-        setPrograms(programsData);
+        setPrograms(programsData.map((p: any) => ({
+          ...p,
+          practical_hours: p.practical_hours || p.practicalHours || "100+ Hours",
+          pricing_details: p.pricing_details || p.pricingDetails || {
+            discountedPrice: p.discountedPrice || p.price,
+            originalPrice: p.originalPrice || ""
+          }
+        })));
       });
   }, []);
 
@@ -56,7 +68,7 @@ export default function ProgramsPage() {
               <Zap className="w-3.5 h-3.5" />
               INDUSTRY-ORIENTED LEARNING
             </motion.div>
-
+ 
             <motion.h1
               initial={designSystem.motion.fadeInUp.initial}
               animate={{ y: 0, opacity: 1 }}
@@ -66,7 +78,7 @@ export default function ProgramsPage() {
               Master the Skills <br className="hidden md:block"/>
               That <span className={designSystem.gradients.textOrangeRed}>Build Careers</span>
             </motion.h1>
-
+ 
             <motion.p
               initial={designSystem.motion.fadeInUp.initial}
               animate={{ y: 0, opacity: 1 }}
@@ -75,7 +87,7 @@ export default function ProgramsPage() {
             >
               Project-first education designed for real-world execution. Build complete portfolios, earn verified certifications, and step into the industry with confidence.
             </motion.p>
-
+ 
             {/* Pricing Overview Cards */}
             <motion.div 
               initial={designSystem.motion.fadeInUp.initial}
@@ -105,7 +117,7 @@ export default function ProgramsPage() {
             </motion.button>
           </div>
         </SectionWrapper>
-
+ 
         {/* Premium Career Programs */}
         <SectionWrapper background="white" id="premium" className="py-20 lg:py-24">
           <div className="max-w-7xl mx-auto">
@@ -117,7 +129,7 @@ export default function ProgramsPage() {
                 Comprehensive 4-6 month journeys designed to take you from fundamentals to advanced, interview-ready systems builder.
               </p>
             </div>
-
+ 
             {premiumPrograms.length === 0 ? (
               <PremiumEmptyState
                 title="No Premium Programs Available"
@@ -145,7 +157,7 @@ export default function ProgramsPage() {
                           </div>
                         </div>
                       )}
-
+ 
                       {/* Meta Header */}
                       <div className="flex items-center justify-between mb-4">
                          <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-orange-100 text-orange-700">
@@ -153,7 +165,7 @@ export default function ProgramsPage() {
                          </span>
                          <span className="text-lg font-extrabold text-slate-900">{prog.price}</span>
                       </div>
-
+ 
                       <h3 className="text-2xl font-bold text-slate-900 mb-3">{prog.title}</h3>
                       <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">{prog.description}</p>
                       
@@ -167,7 +179,7 @@ export default function ProgramsPage() {
                           ))}
                         </div>
                       )}
-
+ 
                       {/* Stats Grid */}
                       <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
                         <div className="flex items-center gap-3">
@@ -185,11 +197,11 @@ export default function ProgramsPage() {
                            </div>
                            <div className="flex flex-col">
                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Practical</span>
-                             <span className="text-sm font-bold text-slate-700">{prog.practicalHours}</span>
+                             <span className="text-sm font-bold text-slate-700">{prog.practical_hours}</span>
                            </div>
                         </div>
                       </div>
-
+ 
                       {Array.isArray(prog.outcomes) && (
                         <div className="mb-8">
                           <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Key Outcomes</p>
@@ -203,7 +215,7 @@ export default function ProgramsPage() {
                           </ul>
                         </div>
                       )}
-
+ 
                       {/* CTA Footer */}
                       <div className="mt-auto pt-6 border-t border-slate-100 flex items-center gap-4">
                         <button className="flex-1 py-3 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-orange-500 transition-colors shadow-sm text-center">
@@ -213,7 +225,7 @@ export default function ProgramsPage() {
                           Syllabus <ChevronRight className="w-4 h-4" />
                         </Link>
                       </div>
-
+ 
                     </div>
                   </GlowCard>
                 ))}
@@ -221,7 +233,7 @@ export default function ProgramsPage() {
             )}
           </div>
         </SectionWrapper>
-
+ 
         {/* Industrial Training Programs */}
         <SectionWrapper background="cream" id="industrial" className="py-20 lg:py-24 border-t border-orange-100/50">
           <div className="max-w-7xl mx-auto">
@@ -233,7 +245,7 @@ export default function ProgramsPage() {
                 Accelerated 2-3 month high-impact practical training. Build real workflows, launch MVPs, and optimize operations.
               </p>
             </div>
-
+ 
             {industrialPrograms.length === 0 ? (
               <PremiumEmptyState
                 title="No Industrial Programs Available"
@@ -261,7 +273,7 @@ export default function ProgramsPage() {
                           </div>
                         </div>
                       )}
-
+ 
                       {/* Meta Header */}
                       <div className="flex items-center justify-between mb-4">
                          <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-slate-100 text-slate-700">
@@ -269,7 +281,7 @@ export default function ProgramsPage() {
                          </span>
                          <span className="text-lg font-extrabold text-slate-900">{prog.price}</span>
                       </div>
-
+ 
                       <h3 className="text-2xl font-bold text-slate-900 mb-3">{prog.title}</h3>
                       <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">{prog.description}</p>
                       
@@ -283,7 +295,7 @@ export default function ProgramsPage() {
                           ))}
                         </div>
                       )}
-
+ 
                       {/* Stats Grid */}
                       <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
                         <div className="flex items-center gap-3">
@@ -301,11 +313,11 @@ export default function ProgramsPage() {
                            </div>
                            <div className="flex flex-col">
                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Practical</span>
-                             <span className="text-sm font-bold text-slate-700">{prog.practicalHours}</span>
+                             <span className="text-sm font-bold text-slate-700">{prog.practical_hours}</span>
                            </div>
                         </div>
                       </div>
-
+ 
                       {Array.isArray(prog.outcomes) && (
                         <div className="mb-8">
                           <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Key Outcomes</p>
@@ -319,17 +331,17 @@ export default function ProgramsPage() {
                           </ul>
                         </div>
                       )}
-
+ 
                       {/* CTA Footer */}
                       <div className="mt-auto pt-6 border-t border-slate-100 flex items-center gap-4">
-                        <button className="flex-1 py-3 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-orange-500 transition-colors shadow-sm text-center">
+                        <button className="flex-1 py-3 bg-slate-950 text-white text-sm font-bold rounded-xl hover:bg-orange-500 transition-colors shadow-sm text-center">
                           Enroll Now
                         </button>
                         <Link href={`/programs/${prog.slug || prog.id}`} className="flex-1 py-3 border-2 border-slate-200 text-slate-700 text-sm font-bold rounded-xl hover:border-slate-300 hover:bg-slate-50 transition-colors flex items-center justify-center gap-1">
                           Syllabus <ChevronRight className="w-4 h-4" />
                         </Link>
                       </div>
-
+ 
                     </div>
                   </GlowCard>
                 ))}

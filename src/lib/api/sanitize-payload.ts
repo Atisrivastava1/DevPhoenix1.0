@@ -29,6 +29,7 @@ function trimString(val: any, label: string, required = false): string {
 
 /**
  * Centralized schema columns mappings and validations to prevent DB schema mismatch failures.
+ * Produces clean, validated snake_case properties matching the database columns exactly.
  */
 export const sanitizePayload = {
   /**
@@ -42,6 +43,15 @@ export const sanitizePayload = {
       throw new ValidationError("A valid slug or title is required to generate the program identifier");
     }
 
+    const practical_hours = trimString(body.practical_hours || body.practicalHours, "Practical Hours", true);
+    const raw_pricing = body.pricing_details || body.pricingDetails || {};
+    const pricing_details = {
+      original_price: trimString(raw_pricing.original_price || raw_pricing.originalPrice, "Original Price"),
+      discounted_price: trimString(raw_pricing.discounted_price || raw_pricing.discountedPrice, "Discounted Price"),
+      emi: trimString(raw_pricing.emi, "EMI Option"),
+      includes: Array.isArray(raw_pricing.includes) ? raw_pricing.includes : []
+    };
+
     return {
       id: trimString(body.id || cleanSlug, "ID"),
       slug: cleanSlug,
@@ -53,14 +63,14 @@ export const sanitizePayload = {
       duration: trimString(body.duration, "Duration", true),
       type: trimString(body.type, "Type", true),
       price: trimString(body.price, "Price", true),
-      practicalHours: trimString(body.practicalHours, "Practical Hours", true),
+      practical_hours,
       tags: Array.isArray(body.tags) ? body.tags.map((t: any) => String(t).trim()).filter(Boolean) : [],
       image: trimString(body.image, "Cover Image", true),
       outcomes: Array.isArray(body.outcomes) ? body.outcomes.map((o: any) => String(o).trim()).filter(Boolean) : [],
       projects: typeof body.projects === "number" ? body.projects : Number(body.projects) || 0,
       curriculum: Array.isArray(body.curriculum) ? body.curriculum : [],
       faqs: Array.isArray(body.faqs) ? body.faqs : [],
-      pricingDetails: body.pricingDetails || {},
+      pricing_details,
       tools: Array.isArray(body.tools) ? body.tools.map((t: any) => String(t).trim()).filter(Boolean) : [],
       certifications: Array.isArray(body.certifications) ? body.certifications.map((c: any) => String(c).trim()).filter(Boolean) : [],
     };
@@ -83,13 +93,13 @@ export const sanitizePayload = {
       title,
       excerpt: trimString(body.excerpt, "Excerpt", true),
       content: trimString(body.content, "Content", true),
-      coverImage: trimString(body.coverImage || body.image, "Cover Image", true),
-      publishedAt: trimString(body.publishedAt || body.date, "Published Date", true),
-      readTime: trimString(body.readTime, "Read Time", true),
+      cover_image: trimString(body.cover_image || body.coverImage || body.image, "Cover Image", true),
+      published_at: trimString(body.published_at || body.publishedAt || body.date, "Published Date", true),
+      read_time: trimString(body.read_time || body.readTime, "Read Time", true),
       category: trimString(body.category, "Category", true),
       tags: Array.isArray(body.tags) ? body.tags.map((t: any) => String(t).trim()).filter(Boolean) : [],
       author: body.author || { name: "Admin", role: "Instructor", avatar: "" },
-      isPublished: typeof body.isPublished === "boolean" ? body.isPublished : body.published === true || false,
+      is_published: typeof body.is_published === "boolean" ? body.is_published : (typeof body.isPublished === "boolean" ? body.isPublished : body.published === true || false),
     };
   },
 
@@ -120,7 +130,7 @@ export const sanitizePayload = {
       status: trimString(body.status, "Status") || "online",
       avatar: trimString(body.avatar || body.image, "Avatar Image", true),
       tags: Array.isArray(body.tags) ? body.tags.map((t: any) => String(t).trim()).filter(Boolean) : [],
-      isVerified: typeof body.isVerified === "boolean" ? body.isVerified : true,
+      is_verified: typeof body.is_verified === "boolean" ? body.is_verified : (typeof body.isVerified === "boolean" ? body.isVerified : true),
       followers: typeof body.followers === "number" ? body.followers : Number(body.followers) || 0,
     };
   },
@@ -135,7 +145,7 @@ export const sanitizePayload = {
       email: trimString(body.email, "Email Address", true),
       phone: trimString(body.phone, "Phone Number", true),
       program: trimString(body.program, "Course Interest") || "",
-      currentStatus: trimString(body.currentStatus, "Current Status") || "",
+      current_status: trimString(body.current_status || body.currentStatus, "Current Status") || "",
       message: trimString(body.message, "Message") || null,
       source_page: trimString(body.source_page, "Source Page") || "",
       source_campaign: trimString(body.source_campaign, "Source Campaign") || "",
@@ -178,10 +188,10 @@ export const sanitizePayload = {
       description: trimString(body.description, "Project Description", true),
       image: trimString(body.image, "Project Screenshot Image", true),
       tags: Array.isArray(body.tags) ? body.tags.map((t: any) => String(t).trim()).filter(Boolean) : [],
-      githubUrl: trimString(body.githubUrl, "GitHub URL") || null,
-      liveUrl: trimString(body.liveUrl, "Live Demo URL") || null,
-      authorName: trimString(body.authorName, "Student Author Name", true),
-      programName: trimString(body.programName, "Associated Program Name", true),
+      github_url: trimString(body.github_url || body.githubUrl, "GitHub URL") || null,
+      live_url: trimString(body.live_url || body.liveUrl, "Live Demo URL") || null,
+      author_name: trimString(body.author_name || body.authorName, "Student Author Name", true),
+      program_name: trimString(body.program_name || body.programName, "Associated Program Name", true),
     };
   },
 
@@ -222,187 +232,5 @@ export const sanitizePayload = {
       tags: Array.isArray(body.tags) ? body.tags.map((x: any) => String(x).trim()).filter(Boolean) : [],
       modules: Array.isArray(body.modules) ? body.modules : [],
     };
-  },
-};
-
-/**
- * Bidirectional database mapping layer to align frontend camelCase interfaces
- * with unquoted Postgres snake_case and lowercase columns transparently.
- */
-export const dbMappers = {
-  /**
-   * Programs:
-   * Frontend: practicalHours, pricingDetails
-   * Database: practical_hours, pricing_details
-   */
-  programToDb(camel: any): any {
-    if (!camel) return camel;
-    const db = { ...camel };
-    if ('practicalHours' in db) {
-      db.practical_hours = db.practicalHours;
-      delete db.practicalHours;
-    }
-    if ('pricingDetails' in db) {
-      db.pricing_details = db.pricingDetails;
-      delete db.pricingDetails;
-    }
-    return db;
-  },
-  programToFrontend(db: any): any {
-    if (!db) return db;
-    const camel = { ...db };
-    if ('practical_hours' in camel) {
-      camel.practicalHours = camel.practical_hours;
-      delete camel.practical_hours;
-    }
-    if ('pricing_details' in camel) {
-      camel.pricingDetails = camel.pricing_details;
-      delete camel.pricing_details;
-    }
-    return camel;
-  },
-
-  /**
-   * Blogs:
-   * Frontend: coverImage, publishedAt, readTime, isPublished
-   * Database: coverimage, publishedat, readtime, ispublished (Postgres unquoted lowercase)
-   */
-  blogToDb(camel: any): any {
-    if (!camel) return camel;
-    const db = { ...camel };
-    if ('coverImage' in db) {
-      db.coverimage = db.coverImage;
-      delete db.coverImage;
-    }
-    if ('publishedAt' in db) {
-      db.publishedat = db.publishedAt;
-      delete db.publishedAt;
-    }
-    if ('readTime' in db) {
-      db.readtime = db.readTime;
-      delete db.readTime;
-    }
-    if ('isPublished' in db) {
-      db.ispublished = db.isPublished;
-      delete db.isPublished;
-    }
-    return db;
-  },
-  blogToFrontend(db: any): any {
-    if (!db) return db;
-    const camel = { ...db };
-    if ('coverimage' in camel) {
-      camel.coverImage = camel.coverimage;
-      delete camel.coverimage;
-    }
-    if ('publishedat' in camel) {
-      camel.publishedAt = camel.publishedat;
-      delete camel.publishedat;
-    }
-    if ('readtime' in camel) {
-      camel.readTime = camel.readtime;
-      delete camel.readtime;
-    }
-    if ('ispublished' in camel) {
-      camel.isPublished = camel.ispublished;
-      delete camel.ispublished;
-    }
-    return camel;
-  },
-
-  /**
-   * Showcase:
-   * Frontend: githubUrl, liveUrl, authorName, programName
-   * Database: githuburl, liveurl, authorname, programname
-   */
-  showcaseToDb(camel: any): any {
-    if (!camel) return camel;
-    const db = { ...camel };
-    if ('githubUrl' in db) {
-      db.githuburl = db.githubUrl;
-      delete db.githubUrl;
-    }
-    if ('liveUrl' in db) {
-      db.liveurl = db.liveUrl;
-      delete db.liveUrl;
-    }
-    if ('authorName' in db) {
-      db.authorname = db.authorName;
-      delete db.authorName;
-    }
-    if ('programName' in db) {
-      db.programname = db.programName;
-      delete db.programName;
-    }
-    return db;
-  },
-  showcaseToFrontend(db: any): any {
-    if (!db) return db;
-    const camel = { ...db };
-    if ('githuburl' in camel) {
-      camel.githubUrl = camel.githuburl;
-      delete camel.githuburl;
-    }
-    if ('liveurl' in camel) {
-      camel.liveUrl = camel.liveurl;
-      delete camel.liveurl;
-    }
-    if ('authorname' in camel) {
-      camel.authorName = camel.authorname;
-      delete camel.authorname;
-    }
-    if ('programname' in camel) {
-      camel.programName = camel.programname;
-      delete camel.programname;
-    }
-    return camel;
-  },
-
-  /**
-   * Leads:
-   * Frontend: currentStatus
-   * Database: currentstatus
-   */
-  leadToDb(camel: any): any {
-    if (!camel) return camel;
-    const db = { ...camel };
-    if ('currentStatus' in db) {
-      db.currentstatus = db.currentStatus;
-      delete db.currentStatus;
-    }
-    return db;
-  },
-  leadToFrontend(db: any): any {
-    if (!db) return db;
-    const camel = { ...db };
-    if ('currentstatus' in camel) {
-      camel.currentStatus = camel.currentstatus;
-      delete camel.currentstatus;
-    }
-    return camel;
-  },
-
-  /**
-   * Mentors:
-   * Frontend: isVerified
-   * Database: isverified
-   */
-  mentorToDb(camel: any): any {
-    if (!camel) return camel;
-    const db = { ...camel };
-    if ('isVerified' in db) {
-      db.isverified = db.isVerified;
-      delete db.isVerified;
-    }
-    return db;
-  },
-  mentorToFrontend(db: any): any {
-    if (!db) return db;
-    const camel = { ...db };
-    if ('isverified' in camel) {
-      camel.isVerified = camel.isverified;
-      delete camel.isverified;
-    }
-    return camel;
   },
 };

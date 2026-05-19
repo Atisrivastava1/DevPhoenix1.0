@@ -49,18 +49,18 @@ export function ProgramStickyCTA({ program }: ProgramStickyCTAProps) {
             <p className="text-xs text-slate-400 font-medium">{program.title}</p>
             <div className="flex items-center gap-2">
               <span className="text-xl font-extrabold text-slate-900">
-                {program.pricingDetails?.discountedPrice || program.price}
+                {(program.pricing_details || program.pricingDetails)?.discountedPrice || program.price}
               </span>
-              {program.pricingDetails?.originalPrice && (
+              {(program.pricing_details || program.pricingDetails)?.originalPrice && (
                 <span className="text-sm text-slate-400 line-through">
-                  {program.pricingDetails.originalPrice}
+                  {(program.pricing_details || program.pricingDetails)?.originalPrice}
                 </span>
               )}
             </div>
           </div>
-          {program.pricingDetails?.emi && (
+          {(program.pricing_details || program.pricingDetails)?.emi && (
             <span className="text-xs bg-green-50 text-green-700 border border-green-200 font-semibold px-2 py-1 rounded-full">
-              EMI {program.pricingDetails.emi}
+              EMI {(program.pricing_details || program.pricingDetails)?.emi}
             </span>
           )}
         </div>

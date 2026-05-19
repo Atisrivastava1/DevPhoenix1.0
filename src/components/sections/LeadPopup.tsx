@@ -26,7 +26,7 @@ export default function LeadPopup() {
   const [submitted, setSubmitted] = useState(false);
   const [submittedData, setSubmittedData] = useState<{ name: string; program: string } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', program: '', currentStatus: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', program: '', current_status: '', message: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const pathname = usePathname();
 
@@ -90,6 +90,8 @@ export default function LeadPopup() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
+          current_status: form.current_status,
+          currentStatus: form.current_status,
           source_page: pathname || '/',
           source_campaign: 'popup',
         }),
@@ -201,7 +203,7 @@ export default function LeadPopup() {
                           </select>
                         </div>
 
-                        <select value={form.currentStatus} onChange={f('currentStatus')}
+                        <select value={form.current_status} onChange={f('current_status')}
                           className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition appearance-none">
                           <option value="">Current status</option>
                           {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}

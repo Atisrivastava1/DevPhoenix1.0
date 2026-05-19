@@ -15,13 +15,20 @@ import { join } from 'path';
 // ─── Dynamic JSON Helper ──────────────────────────────────────────────────────
 function getBlogPosts() {
   const FILE_PATH = join(process.cwd(), 'src/data/blog-dynamic.json');
-  if (!existsSync(FILE_PATH)) return staticBlogPosts;
-  try {
-    const data = JSON.parse(readFileSync(FILE_PATH, 'utf-8'));
-    return Array.isArray(data) && data.length > 0 ? data : staticBlogPosts;
-  } catch {
-    return staticBlogPosts;
+  let rawList = staticBlogPosts;
+  if (existsSync(FILE_PATH)) {
+    try {
+      const data = JSON.parse(readFileSync(FILE_PATH, 'utf-8'));
+      if (Array.isArray(data) && data.length > 0) rawList = data;
+    } catch {}
   }
+  return rawList.map((post: any) => ({
+    ...post,
+    cover_image: post.cover_image || post.coverImage || post.image,
+    published_at: post.published_at || post.publishedAt || post.date,
+    read_time: post.read_time || post.readTime || "5 min read",
+    is_published: typeof post.is_published === "boolean" ? post.is_published : (typeof post.isPublished === "boolean" ? post.isPublished : post.published === true || false)
+  }));
 }
 
 // ─── Dynamic Metadata ──────────────────────────────────────────────────────────
@@ -40,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: post.title,
       description: post.excerpt,
       url: `https://devphoenix.tech/blog/${post.slug}`,
-      images: [{ url: post.image.startsWith('http') ? post.image : `https://devphoenix.tech${post.image}`, width: 1200, height: 630 }],
+      images: [{ url: post.cover_image.startsWith('http') ? post.cover_image : `https://devphoenix.tech${post.cover_image}`, width: 1200, height: 630 }],
     },
     twitter: { card: 'summary_large_image', title: post.title, description: post.excerpt },
   };
@@ -57,7 +64,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   const jsonLd = [
     organizationJsonLd,
-    blogPostingJsonLd({ title: post.title, excerpt: post.excerpt, slug: post.slug, date: post.date, image: post.image, author: post.author }),
+    blogPostingJsonLd({ title: post.title, excerpt: post.excerpt, slug: post.slug, date: post.published_at, image: post.cover_image, author: post.author }),
     breadcrumbJsonLd([
       { label: 'Home', href: '/' },
       { label: 'Blog', href: '/blog' },
@@ -84,7 +91,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="flex items-center gap-3 text-xs font-semibold text-orange-600 uppercase tracking-widest mb-4">
               <span>{post.category}</span>
               <span className="w-1 h-1 rounded-full bg-orange-300" />
-              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {post.readTime}</span>
+              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {post.read_time}</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-extrabold mb-8 text-slate-900 leading-[1.2]">{post.title}</h1>
@@ -96,7 +103,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 </div>
                 <div>
                   <p className="font-bold text-slate-900">{post.author.name}</p>
-                  <p className="text-sm text-slate-500">{post.author.role} · {post.date}</p>
+                  <p className="text-sm text-slate-500">{post.author.role} · {post.published_at ? new Date(post.published_at).toLocaleDateString() : ""}</p>
                 </div>
               </div>
               <a
@@ -113,7 +120,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Featured Image */}
         <SectionWrapper background="white" className="!py-0">
           <div className="max-w-5xl mx-auto relative w-full aspect-[21/9] overflow-hidden rounded-3xl bg-slate-50 border border-slate-100">
-            <DynamicImage src={post.image} alt={post.title} fill priority className="object-cover" category={post.category} />
+            <DynamicImage src={post.cover_image} alt={post.title} fill priority className="object-cover" category={post.category} />
           </div>
         </SectionWrapper>
 

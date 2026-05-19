@@ -1,9 +1,11 @@
--- DevPhoeniX Ecosystem - Production-Ready Supabase Schema
+-- DevPhoeniX Ecosystem - Production-Ready Standardized Supabase Schema
 -- Run this in the Supabase SQL Editor (https://supabase.com/dashboard/project/_/sql)
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- ── 1. PROGRAMS TABLE ─────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS programs (
-  id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.programs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
@@ -13,7 +15,7 @@ CREATE TABLE IF NOT EXISTS programs (
   duration TEXT NOT NULL,
   type TEXT NOT NULL,
   price TEXT NOT NULL,
-  practicalHours TEXT NOT NULL,
+  practical_hours TEXT NOT NULL,
   tags TEXT[] NOT NULL DEFAULT '{}',
   image TEXT NOT NULL,
   outcomes TEXT[] NOT NULL DEFAULT '{}',
@@ -21,7 +23,7 @@ CREATE TABLE IF NOT EXISTS programs (
   
   curriculum JSONB DEFAULT '[]'::jsonb,
   faqs JSONB DEFAULT '[]'::jsonb,
-  pricingDetails JSONB DEFAULT '{}'::jsonb,
+  pricing_details JSONB DEFAULT '{}'::jsonb,
   tools TEXT[] DEFAULT '{}',
   certifications TEXT[] DEFAULT '{}',
   
@@ -30,26 +32,26 @@ CREATE TABLE IF NOT EXISTS programs (
 );
 
 -- ── 2. BLOGS TABLE ────────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS blogs (
-  id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.blogs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   excerpt TEXT NOT NULL,
   content TEXT NOT NULL,
-  coverImage TEXT NOT NULL,
-  publishedAt TEXT NOT NULL,
-  readTime TEXT NOT NULL,
+  cover_image TEXT NOT NULL,
+  published_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  read_time TEXT NOT NULL,
   category TEXT NOT NULL,
   tags TEXT[] NOT NULL DEFAULT '{}',
   author JSONB NOT NULL DEFAULT '{"name": "Admin", "role": "Instructor", "avatar": ""}'::jsonb,
-  isPublished BOOLEAN NOT NULL DEFAULT false,
+  is_published BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- ── 3. TESTIMONIALS TABLE ──────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS testimonials (
-  id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.testimonials (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   role TEXT NOT NULL,
   company TEXT,
@@ -61,26 +63,26 @@ CREATE TABLE IF NOT EXISTS testimonials (
 );
 
 -- ── 4. MENTORS TABLE ───────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS mentors (
-  id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.mentors (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   role TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'online',
   avatar TEXT NOT NULL,
   tags TEXT[] NOT NULL DEFAULT '{}',
-  isVerified BOOLEAN NOT NULL DEFAULT true,
+  is_verified BOOLEAN NOT NULL DEFAULT true,
   followers INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- ── 5. LEADS TABLE (CRM) ────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS leads (
-  id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.leads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
   program TEXT NOT NULL DEFAULT '',
-  currentStatus TEXT NOT NULL DEFAULT '',
+  current_status TEXT NOT NULL DEFAULT '',
   message TEXT,
   source_page TEXT DEFAULT '',
   source_campaign TEXT DEFAULT '',
@@ -93,7 +95,7 @@ CREATE TABLE IF NOT EXISTS leads (
 );
 
 -- ── 6. SITE CONFIG TABLE (SINGLETON) ───────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS site_config (
+CREATE TABLE IF NOT EXISTS public.site_config (
   id TEXT PRIMARY KEY DEFAULT 'global',
   hero JSONB NOT NULL,
   contact JSONB NOT NULL,
@@ -102,22 +104,22 @@ CREATE TABLE IF NOT EXISTS site_config (
 );
 
 -- ── 7. SHOWCASE TABLE ──────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS showcase (
-  id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.showcase (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   image TEXT NOT NULL,
   tags TEXT[] NOT NULL DEFAULT '{}',
-  githubUrl TEXT,
-  liveUrl TEXT,
-  authorName TEXT NOT NULL,
-  programName TEXT NOT NULL,
+  github_url TEXT,
+  live_url TEXT,
+  author_name TEXT NOT NULL,
+  program_name TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- ── 8. VISUAL BLOCKS TABLE ─────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS visual_blocks (
-  id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.visual_blocks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   section_key TEXT NOT NULL,
   title TEXT NOT NULL,
   subtitle TEXT,
@@ -134,7 +136,7 @@ CREATE TABLE IF NOT EXISTS visual_blocks (
 );
 
 -- ── 9. ADMIN USERS TABLE ───────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS admin_users (
+CREATE TABLE IF NOT EXISTS public.admin_users (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT UNIQUE NOT NULL,
   role TEXT NOT NULL DEFAULT 'editor',
@@ -142,8 +144,24 @@ CREATE TABLE IF NOT EXISTS admin_users (
   last_login TIMESTAMP WITH TIME ZONE
 );
 
--- ── 10. INSERT INITIAL GLOBAL CONFIGURATION ───────────────────────────────────
-INSERT INTO site_config (id, hero, contact, socials)
+-- ── 10. LEARNING PATHS TABLE ───────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.learning_paths (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  level TEXT DEFAULT 'All Levels',
+  duration TEXT,
+  image TEXT,
+  included TEXT[] DEFAULT '{}',
+  build JSONB DEFAULT '[]'::jsonb,
+  tags TEXT[] DEFAULT '{}',
+  modules JSONB DEFAULT '[]'::jsonb,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ── 11. INSERT INITIAL GLOBAL CONFIGURATION ───────────────────────────────────
+INSERT INTO public.site_config (id, hero, contact, socials)
 VALUES (
   'global',
   '{"badge":"The Elite Builder Ecosystem","headline1":"Learn. Build.","headline2":"Scale Faster.","subheadline":"Join a premium community of top 1% developers, founders, and creators building the future.","primaryCta":{"text":"Explore Programs","href":"/programs"},"secondaryCta":{"text":"Join Community","href":"/community"},"stats":[{"value":"1000+","label":"Active Builders"},{"value":"₹20M+","label":"Total Placements"},{"value":"50+","label":"Industry Mentors"}]}',
@@ -151,46 +169,44 @@ VALUES (
   '{"instagram":"#","linkedin":"#","facebook":"#","twitter":"#","github":"#"}'
 ) ON CONFLICT (id) DO NOTHING;
 
--- ── 11. ROW LEVEL SECURITY (RLS) POLICIES ─────────────────────────────────────
-ALTER TABLE programs ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Allow public read-only access to programs" ON programs;
-CREATE POLICY "Allow public read-only access to programs" ON programs FOR SELECT USING (true);
+-- ── 12. ROW LEVEL SECURITY (RLS) POLICIES ─────────────────────────────────────
+ALTER TABLE public.programs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to programs" ON public.programs;
+CREATE POLICY "Allow public read-only access to programs" ON public.programs FOR SELECT USING (true);
 
-ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Allow public read-only access to blogs" ON blogs;
-CREATE POLICY "Allow public read-only access to blogs" ON blogs FOR SELECT USING (true);
+ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to blogs" ON public.blogs;
+CREATE POLICY "Allow public read-only access to blogs" ON public.blogs FOR SELECT USING (true);
 
-ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Allow public read-only access to testimonials" ON testimonials;
-CREATE POLICY "Allow public read-only access to testimonials" ON testimonials FOR SELECT USING (true);
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to testimonials" ON public.testimonials;
+CREATE POLICY "Allow public read-only access to testimonials" ON public.testimonials FOR SELECT USING (true);
 
-ALTER TABLE mentors ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Allow public read-only access to mentors" ON mentors;
-CREATE POLICY "Allow public read-only access to mentors" ON mentors FOR SELECT USING (true);
+ALTER TABLE public.mentors ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to mentors" ON public.mentors;
+CREATE POLICY "Allow public read-only access to mentors" ON public.mentors FOR SELECT USING (true);
 
-ALTER TABLE site_config ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Allow public read-only access to site config" ON site_config;
-CREATE POLICY "Allow public read-only access to site config" ON site_config FOR SELECT USING (true);
+ALTER TABLE public.site_config ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to site config" ON public.site_config;
+CREATE POLICY "Allow public read-only access to site config" ON public.site_config FOR SELECT USING (true);
 
-ALTER TABLE showcase ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Allow public read-only access to showcase" ON showcase;
-CREATE POLICY "Allow public read-only access to showcase" ON showcase FOR SELECT USING (true);
+ALTER TABLE public.showcase ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to showcase" ON public.showcase;
+CREATE POLICY "Allow public read-only access to showcase" ON public.showcase FOR SELECT USING (true);
 
-ALTER TABLE visual_blocks ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Allow public read-only access to visual blocks" ON visual_blocks;
-CREATE POLICY "Allow public read-only access to visual blocks" ON visual_blocks FOR SELECT USING (true);
+ALTER TABLE public.visual_blocks ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to visual blocks" ON public.visual_blocks;
+CREATE POLICY "Allow public read-only access to visual blocks" ON public.visual_blocks FOR SELECT USING (true);
+
+ALTER TABLE public.learning_paths ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read-only access to learning_paths" ON public.learning_paths;
+CREATE POLICY "Allow public read-only access to learning_paths" ON public.learning_paths FOR SELECT USING (true);
 
 -- Leads and admin users tables are protected from public read access.
-ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
-ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
 
--- Note: Since Next.js server-side API routes bypass RLS using the SUPABASE_SERVICE_ROLE_KEY 
--- (or perform authenticated admin actions), you can create write policies or rely on Service Role.
-
--- ── 12. STORAGE BUCKET CREATION & POLICIES ─────────────────────────────────────
-
--- Ensure extension exists
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- ── 13. STORAGE BUCKET CREATION & POLICIES ─────────────────────────────────────
 
 -- Create public media bucket
 INSERT INTO storage.buckets (
@@ -238,36 +254,3 @@ ON storage.objects
 FOR DELETE
 TO authenticated
 USING (bucket_id = 'media');
-
-
--- LEARNING PATHS TABLE
-CREATE TABLE IF NOT EXISTS public.learning_paths (
-    id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    description TEXT,
-    level TEXT DEFAULT 'All Levels',
-    duration TEXT,
-    image TEXT,
-    included TEXT[] DEFAULT '{}',
-    build JSONB DEFAULT '[]'::jsonb,
-    tags TEXT[] DEFAULT '{}',
-    modules JSONB DEFAULT '[]'::jsonb,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
--- Enable RLS
-ALTER TABLE public.learning_paths ENABLE ROW LEVEL SECURITY;
-
--- Idempotent RLS Policies
-DROP POLICY IF EXISTS "Allow public read-only access to learning_paths" ON public.learning_paths;
-CREATE POLICY "Allow public read-only access to learning_paths"
-    ON public.learning_paths FOR SELECT
-    USING (true);
-
-DROP POLICY IF EXISTS "Allow authenticated admin write access to learning_paths" ON public.learning_paths;
-CREATE POLICY "Allow authenticated admin write access to learning_paths"
-    ON public.learning_paths FOR ALL
-    USING (true)
-    WITH CHECK (true);
-

@@ -5,16 +5,37 @@ import { join } from "path";
 // Standard HTTP Response structures
 export const apiResponse = {
   success: (data: any, status = 200) => {
-    return NextResponse.json(data, { status });
+    return NextResponse.json({ success: true, data }, { status });
   },
-  error: (message: string, status = 500) => {
-    return NextResponse.json({ success: false, error: message }, { status });
+  error: (message: string, code = "INTERNAL_SERVER_ERROR", details: any = null, status = 500) => {
+    return NextResponse.json({
+      success: false,
+      error: {
+        message,
+        code,
+        details: details ? (typeof details === "string" ? details : JSON.stringify(details)) : ""
+      }
+    }, { status });
   },
-  notFound: (message = "Resource not found") => {
-    return NextResponse.json({ success: false, error: message }, { status: 404 });
+  notFound: (message = "Resource not found", code = "NOT_FOUND") => {
+    return NextResponse.json({
+      success: false,
+      error: {
+        message,
+        code,
+        details: ""
+      }
+    }, { status: 404 });
   },
-  badRequest: (message = "Invalid payload parameters") => {
-    return NextResponse.json({ success: false, error: message }, { status: 400 });
+  badRequest: (message = "Invalid payload parameters", code = "BAD_REQUEST", details: any = null) => {
+    return NextResponse.json({
+      success: false,
+      error: {
+        message,
+        code,
+        details: details ? (typeof details === "string" ? details : JSON.stringify(details)) : ""
+      }
+    }, { status: 400 });
   },
 };
 

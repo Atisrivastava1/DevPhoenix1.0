@@ -12,8 +12,8 @@ interface ProgramPricingProps {
 }
 
 export function ProgramPricing({ program }: ProgramPricingProps) {
-  const pd = program.pricingDetails;
-
+  const pd = program.pricing_details || program.pricingDetails;
+ 
   // What's included — from pricingDetails.includes if available, else sensible defaults
   const included = pd?.includes && pd.includes.length > 0 ? pd.includes : [
     "Complete Curriculum Access",
@@ -54,7 +54,7 @@ export function ProgramPricing({ program }: ProgramPricingProps) {
               </p>
 
               <ul className="space-y-3 mb-8">
-                {included.map((feature, idx) => (
+                {included.map((feature: string, idx: number) => (
                   <li key={idx} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                       <Check className="w-3.5 h-3.5 text-green-600" />
@@ -67,7 +67,7 @@ export function ProgramPricing({ program }: ProgramPricingProps) {
               {/* Trust signals */}
               <div className="grid grid-cols-3 gap-4">
                 {[
-                  { value: program.practicalHours, label: 'Practical Hours' },
+                  { value: program.practical_hours || (program as any).practicalHours, label: 'Practical Hours' },
                   { value: `${program.projects}+`, label: 'Live Projects' },
                   { value: '100%', label: 'Job Support' },
                 ].map(stat => (

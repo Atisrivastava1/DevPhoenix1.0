@@ -1,13 +1,10 @@
-import { NextResponse } from 'next/server';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { NextRequest } from 'next/server';
 import { visualBlocksService } from '@/services/supabase/db.service';
 import { hasSupabaseConfig } from '@/services/supabase/client';
-import { sanitizePayload } from '@/lib/api/sanitize-payload';
+import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
+import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
 
 export const dynamic = 'force-dynamic';
-
-const FILE_PATH = join(process.cwd(), 'src/data/visual-blocks-dynamic.json');
 
 const INITIAL_SEED = [
   // ── Hero visuals ──
@@ -259,83 +256,64 @@ const INITIAL_SEED = [
   }
 ];
 
-function read() {
-  if (!existsSync(FILE_PATH)) {
-    writeFileSync(FILE_PATH, JSON.stringify(INITIAL_SEED, null, 2), 'utf-8');
-    return INITIAL_SEED;
-  }
-  try {
-    const raw = readFileSync(FILE_PATH, 'utf-8');
-    return JSON.parse(raw);
-  } catch {
-    return INITIAL_SEED;
-  }
-}
-
-function write(data: any) {
-  writeFileSync(FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-}
+const cache = getLocalCacheHelper<any>('visual-blocks-dynamic.json', undefined, INITIAL_SEED);
 
 export async function GET() {
   if (hasSupabaseConfig) {
     try {
       const items = await visualBlocksService.getAll();
       if (items && items.length > 0) {
-        return NextResponse.json(items);
+        return apiResponse.success(items);
       }
       // If table exists but has 0 blocks, seed it with the INITIAL_SEED
       await visualBlocksService.saveAll(INITIAL_SEED);
-      return NextResponse.json(INITIAL_SEED);
+      return apiResponse.success(INITIAL_SEED);
     } catch (err: any) {
       console.error('Supabase visual-blocks GET error, falling back to local:', err);
     }
   }
-  const data = read();
-  return NextResponse.json(data);
+  return apiResponse.success(cache.read());
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   try {
     const payload = await req.json();
     if (!Array.isArray(payload)) {
-      return NextResponse.json({ error: 'Payload must be an array of visual blocks' }, { status: 400 });
+      return apiResponse.badRequest('Payload must be an array of visual blocks', "INVALID_PAYLOAD_TYPE");
     }
 
     // Sanitize and validate every block in the array
-    const sanitizedArray = payload.map((block: any) => sanitizePayload.visualBlock(block));
+    const sanitizedArray = payload.map((block: any) => {
+      try {
+        return sanitizePayload.visualBlock(block);
+      } catch (valErr: any) {
+        if (valErr instanceof ValidationError) {
+          throw valErr;
+        }
+        throw new ValidationError(valErr.message || "Validation failed on visual block");
+      }
+    });
 
     if (hasSupabaseConfig) {
       console.log(`[VISUAL BLOCKS API PUT ARRAY PAYLOAD COUNT: ${sanitizedArray.length}]`);
       try {
         await visualBlocksService.saveAll(sanitizedArray);
         console.log("[VISUAL BLOCKS API PUT SUCCESS]");
-        return NextResponse.json({ success: true });
+        return apiResponse.success({ success: true });
       } catch (dbErr: any) {
         console.error('[VISUAL BLOCKS API PUT SUPABASE ERROR]', dbErr);
-        return NextResponse.json(
-          {
-            success: false,
-            error: dbErr.message || "Database visual-blocks save operation failed",
-            details: dbErr
-          },
-          { status: 500 }
-        );
+        return apiResponse.error(dbErr.message || "Database save operation failed", "DATABASE_SAVE_FAILED", dbErr);
       }
     }
 
     console.log("[VISUAL BLOCKS API local cache save]");
-    write(sanitizedArray);
-    return NextResponse.json({ success: true });
+    cache.write(sanitizedArray);
+    return apiResponse.success({ success: true });
   } catch (err: any) {
     console.error("[VISUAL BLOCKS API PUT SERVER ERROR]", err);
-    return NextResponse.json(
-      {
-        success: false,
-        error: err.message || 'Failed to process request',
-        details: err
-      },
-      { status: err.status || 500 }
-    );
+    if (err instanceof ValidationError) {
+      return apiResponse.badRequest(err.message, "VALIDATION_FAILED");
+    }
+    return apiResponse.error(err.message || 'Failed to process request', "SERVER_ERROR");
   }
 }
-

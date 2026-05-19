@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { blogPosts } from "@/data/blog";
 import { blogsService } from "@/services/supabase/db.service";
 import { hasSupabaseConfig } from "@/services/supabase/client";
 import { apiResponse, getLocalCacheHelper } from "@/lib/api-utils";
-import { BlogCMS } from "@/types/cms-schema";
-import { sanitizePayload } from "@/lib/api/sanitize-payload";
+import { Blog } from "@/types";
+import { sanitizePayload, ValidationError } from "@/lib/api/sanitize-payload";
 
 export const dynamic = "force-dynamic";
 
-const INITIAL_SEED: BlogCMS[] = blogPosts.map((post, idx) => ({
+const INITIAL_SEED: Blog[] = blogPosts.map((post, idx) => ({
   id: `blog-static-${idx}`,
   created_at: new Date(Date.now() - idx * 24 * 60 * 60 * 1000).toISOString(),
   title: post.title,
@@ -16,14 +16,15 @@ const INITIAL_SEED: BlogCMS[] = blogPosts.map((post, idx) => ({
   excerpt: post.excerpt,
   content: post.content,
   category: post.category,
-  readTime: post.readTime,
-  date: post.date,
-  image: post.image,
-  published: true,
+  tags: (post as any).tags || [],
+  read_time: post.readTime || "5 min read",
+  published_at: new Date(Date.now() - idx * 24 * 60 * 60 * 1000).toISOString(),
+  cover_image: post.image,
+  is_published: true,
   author: post.author,
 }));
 
-const cache = getLocalCacheHelper<BlogCMS>("blog-dynamic.json", undefined, INITIAL_SEED);
+const cache = getLocalCacheHelper<Blog>("blog-dynamic.json", undefined, INITIAL_SEED);
 
 export async function GET() {
   if (!hasSupabaseConfig) {
@@ -33,7 +34,7 @@ export async function GET() {
     const data = await blogsService.getAll();
     return apiResponse.success(data);
   } catch (error: any) {
-    return apiResponse.error(error.message);
+    return apiResponse.error(error.message, "DATABASE_FETCH_FAILED");
   }
 }
 
@@ -42,10 +43,21 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     
     // Sanitize and validate payload
-    const sanitized = sanitizePayload.blog(body);
-    const newPost: BlogCMS = {
+    let sanitized: Blog;
+    try {
+      sanitized = sanitizePayload.blog(body);
+    } catch (valErr: any) {
+      if (valErr instanceof ValidationError) {
+        console.warn("⚠️ [POST /api/blog] Validation Failed:", valErr.message);
+        return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+      }
+      throw valErr;
+    }
+
+    const newPost: Blog = {
       ...sanitized,
       created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     if (!hasSupabaseConfig) {
@@ -64,25 +76,11 @@ export async function POST(req: NextRequest) {
       return apiResponse.success(result, 201);
     } catch (dbErr: any) {
       console.error("[BLOGS API POST SUPABASE ERROR]", dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database insert operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database insert operation failed", "DATABASE_INSERT_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[BLOGS API POST SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: error.status || 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
 
@@ -90,11 +88,21 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     if (!body.id) {
-      return apiResponse.badRequest("Article ID is required");
+      return apiResponse.badRequest("Article ID is required", "MISSING_REQUIRED_FIELD");
     }
 
     // Sanitize and validate payload
-    const sanitized = sanitizePayload.blog(body);
+    let sanitized: Blog;
+    try {
+      sanitized = sanitizePayload.blog(body);
+    } catch (valErr: any) {
+      if (valErr instanceof ValidationError) {
+        console.warn(`⚠️ [PUT /api/blog] Validation Failed for ${body.id}:`, valErr.message);
+        return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+      }
+      throw valErr;
+    }
+
     const updatedPayload = {
       ...sanitized,
       updated_at: new Date().toISOString(),
@@ -118,25 +126,11 @@ export async function PUT(req: NextRequest) {
       return apiResponse.success(result);
     } catch (dbErr: any) {
       console.error("[BLOGS API PUT SUPABASE ERROR]", dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database update operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database update operation failed", "DATABASE_UPDATE_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[BLOGS API PUT SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: error.status || 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
 
@@ -144,7 +138,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
     if (!id) {
-      return apiResponse.badRequest("Article ID is required");
+      return apiResponse.badRequest("Article ID is required", "MISSING_REQUIRED_FIELD");
     }
 
     if (!hasSupabaseConfig) {
@@ -161,24 +155,10 @@ export async function DELETE(req: NextRequest) {
       return apiResponse.success({ success: true });
     } catch (dbErr: any) {
       console.error("[BLOGS API DELETE SUPABASE ERROR]", dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database delete operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database delete operation failed", "DATABASE_DELETE_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[BLOGS API DELETE SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }

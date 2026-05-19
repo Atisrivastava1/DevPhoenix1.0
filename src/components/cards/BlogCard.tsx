@@ -7,12 +7,12 @@ import { designSystem } from '@/lib/design-system';
 interface BlogCardProps {
   post: {
     slug: string;
-    image: string;
+    cover_image: string;
     title: string;
     excerpt: string;
     category: string;
-    date: string;
-    readTime: string;
+    published_at: string;
+    read_time: string;
     author: {
       name: string;
       avatar: string;
@@ -26,7 +26,7 @@ export function BlogCard({ post, className = '' }: BlogCardProps) {
     <div className={`bg-white ${designSystem.borderRadius.card} overflow-hidden border ${designSystem.colors.border.light} ${designSystem.shadows.soft} hover:${designSystem.shadows.hover} transition-all duration-500 flex flex-col group ${className}`}>
       <Link href={`/blog/${post.slug}`} className="block relative w-full aspect-[16/9] overflow-hidden bg-slate-50 border-b border-slate-100">
         <DynamicImage 
-          src={post.image} 
+          src={post.cover_image} 
           alt={post.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -41,9 +41,9 @@ export function BlogCard({ post, className = '' }: BlogCardProps) {
 
       <div className={`${designSystem.spacing.cardPadding} flex flex-col flex-grow`}>
         <div className="flex items-center gap-3 text-xs font-semibold text-slate-500 mb-4">
-          <span>{post.date}</span>
+          <span>{post.published_at ? new Date(post.published_at).toLocaleDateString() : ""}</span>
           <span className="w-1 h-1 rounded-full bg-slate-300" />
-          <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {post.readTime}</span>
+          <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {post.read_time}</span>
         </div>
 
         <Link href={`/blog/${post.slug}`} className="block group-hover:text-orange-500 transition-colors">

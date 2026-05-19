@@ -18,7 +18,7 @@ export interface ProgramCMS extends BaseCMSItem {
   outcomes: string[];
   tags: string[];
   image: string;
-  practicalHours: string;
+  practical_hours: string;
   projects: number;
   curriculum: Array<{
     week: string;
@@ -29,9 +29,9 @@ export interface ProgramCMS extends BaseCMSItem {
     question: string;
     answer: string;
   }>;
-  pricingDetails?: {
-    originalPrice?: string;
-    discountedPrice?: string;
+  pricing_details?: {
+    original_price?: string;
+    discounted_price?: string;
     emi?: string;
     includes?: string[];
   };
@@ -43,10 +43,10 @@ export interface BlogCMS extends BaseCMSItem {
   excerpt: string;
   content: string; // HTML string
   category: string;
-  readTime: string;
-  date: string;
-  image: string;
-  published: boolean;
+  read_time: string;
+  published_at: string;
+  cover_image: string;
+  is_published: boolean;
   author?: {
     name: string;
     role: string;
@@ -64,7 +64,7 @@ export interface LeadCMS extends BaseCMSItem {
   status: LeadStatus;
   source_page?: string;
   message?: string;
-  currentStatus?: string;
+  current_status?: string;
   notes?: Array<{
     id: string;
     content: string;

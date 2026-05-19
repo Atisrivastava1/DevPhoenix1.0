@@ -17,7 +17,9 @@ interface Lead {
   program?: string;
   status?: string;
   message?: string;
-  createdAt: string;
+  created_at?: string;
+  createdAt?: string;
+  current_status?: string;
   currentStatus?: string;
 }
 
@@ -30,7 +32,7 @@ interface LeadCardProps {
 export default function LeadCard({ lead, onStatusChange, onDelete }: LeadCardProps) {
   const status = lead.status || 'New';
   const colors = STATUS_COLORS[status] || STATUS_COLORS.New;
-  const date = new Date(lead.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const date = new Date(lead.created_at || lead.createdAt || '').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
   return (
     <motion.div
@@ -71,8 +73,8 @@ export default function LeadCard({ lead, onStatusChange, onDelete }: LeadCardPro
           <Clock className="w-3 h-3 shrink-0" />
           <span>{date}</span>
         </div>
-        {lead.currentStatus && (
-          <p className="text-xs text-slate-500 italic">{lead.currentStatus}</p>
+        {(lead.current_status || lead.currentStatus) && (
+          <p className="text-xs text-slate-500 italic">{lead.current_status || lead.currentStatus}</p>
         )}
       </div>
 

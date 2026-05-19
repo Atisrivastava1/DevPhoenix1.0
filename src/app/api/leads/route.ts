@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { leadsService } from "@/services/supabase/db.service";
 import { hasSupabaseConfig } from "@/services/supabase/client";
 import { apiResponse, getLocalCacheHelper } from "@/lib/api-utils";
-import { LeadCMS } from "@/types/cms-schema";
-import { sanitizePayload } from "@/lib/api/sanitize-payload";
+import { Lead } from "@/types";
+import { sanitizePayload, ValidationError } from "@/lib/api/sanitize-payload";
 
 export const dynamic = "force-dynamic";
 
-const cache = getLocalCacheHelper<LeadCMS>("leads.json");
+const cache = getLocalCacheHelper<Lead>("leads.json");
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get("status");
     const search = searchParams.get("search");
 
-    let leads: LeadCMS[] = [];
+    let leads: Lead[] = [];
     if (hasSupabaseConfig) {
       try {
         leads = await leadsService.getAll();
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
     return apiResponse.success(leads);
   } catch (error: any) {
-    return apiResponse.error(error.message);
+    return apiResponse.error(error.message, "DATABASE_FETCH_FAILED");
   }
 }
 
@@ -52,11 +52,22 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     
     // Sanitize and validate payload
-    const sanitized = sanitizePayload.lead(body);
-    const newLead: LeadCMS = {
+    let sanitized: Lead;
+    try {
+      sanitized = sanitizePayload.lead(body);
+    } catch (valErr: any) {
+      if (valErr instanceof ValidationError) {
+        console.warn("⚠️ [POST /api/leads] Validation Failed:", valErr.message);
+        return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+      }
+      throw valErr;
+    }
+
+    const newLead: Lead = {
       ...sanitized,
       status: "New",
       created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     if (!hasSupabaseConfig) {
@@ -75,25 +86,11 @@ export async function POST(req: NextRequest) {
       return apiResponse.success(result, 201);
     } catch (dbErr: any) {
       console.error("[LEADS API POST SUPABASE ERROR]", dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database insert operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database insert operation failed", "DATABASE_INSERT_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[LEADS API POST SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: error.status || 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
 
@@ -101,13 +98,13 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     if (!body.id) {
-      return NextResponse.json({ error: "Lead ID is required" }, { status: 400 });
+      return apiResponse.badRequest("Lead ID is required", "MISSING_REQUIRED_FIELD");
     }
 
     if (hasSupabaseConfig) {
       const existingLeads = await leadsService.getAll();
       const found = existingLeads.find((l) => l.id === body.id);
-      if (!found) return NextResponse.json({ error: "Lead not found" }, { status: 404 });
+      if (!found) return apiResponse.notFound("Lead not found");
 
       let updatedPayload: any = {};
       if (body.action === "add_note") {
@@ -123,7 +120,15 @@ export async function PUT(req: NextRequest) {
         };
       } else {
         // Sanitize other updates to strictly match schema fields
-        const sanitized = sanitizePayload.lead(body);
+        let sanitized: Lead;
+        try {
+          sanitized = sanitizePayload.lead(body);
+        } catch (valErr: any) {
+          if (valErr instanceof ValidationError) {
+            return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+          }
+          throw valErr;
+        }
         updatedPayload = {
           ...sanitized,
           updated_at: new Date().toISOString(),
@@ -139,14 +144,7 @@ export async function PUT(req: NextRequest) {
         return apiResponse.success(result);
       } catch (dbErr: any) {
         console.error("[LEADS API PUT SUPABASE ERROR]", dbErr);
-        return NextResponse.json(
-          {
-            success: false,
-            error: dbErr.message || "Database update operation failed",
-            details: dbErr
-          },
-          { status: 500 }
-        );
+        return apiResponse.error(dbErr.message || "Database update operation failed", "DATABASE_UPDATE_FAILED", dbErr);
       }
     }
 
@@ -154,7 +152,7 @@ export async function PUT(req: NextRequest) {
     console.log("[LEADS API local cache update]", body.id);
     const list = cache.read();
     const idx = list.findIndex((l) => l.id === body.id);
-    if (idx === -1) return NextResponse.json({ error: "Lead not found" }, { status: 404 });
+    if (idx === -1) return apiResponse.notFound("Lead not found");
 
     if (body.action === "add_note") {
       const note = {
@@ -166,7 +164,15 @@ export async function PUT(req: NextRequest) {
       list[idx].notes = [...(list[idx].notes || []), note];
       list[idx].updated_at = new Date().toISOString();
     } else {
-      const sanitized = sanitizePayload.lead(body);
+      let sanitized: Lead;
+      try {
+        sanitized = sanitizePayload.lead(body);
+      } catch (valErr: any) {
+        if (valErr instanceof ValidationError) {
+          return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+        }
+        throw valErr;
+      }
       list[idx] = {
         ...list[idx],
         ...sanitized,
@@ -179,14 +185,7 @@ export async function PUT(req: NextRequest) {
     return apiResponse.success(list[idx]);
   } catch (error: any) {
     console.error("[LEADS API PUT SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: error.status || 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
 
@@ -194,7 +193,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
     if (!id) {
-      return NextResponse.json({ error: "Lead ID is required" }, { status: 400 });
+      return apiResponse.badRequest("Lead ID is required", "MISSING_REQUIRED_FIELD");
     }
 
     console.log(`[LEADS API DELETE ID]`, id);
@@ -211,24 +210,10 @@ export async function DELETE(req: NextRequest) {
       return apiResponse.success({ success: true });
     } catch (dbErr: any) {
       console.error("[LEADS API DELETE SUPABASE ERROR]", dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database delete operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database delete operation failed", "DATABASE_DELETE_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[LEADS API DELETE SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }

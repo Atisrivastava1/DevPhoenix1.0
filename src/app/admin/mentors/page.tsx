@@ -5,7 +5,7 @@ import { Plus, Edit2, Trash2, Users } from 'lucide-react';
 import FormModal, { Field, Input, Select } from '@/components/admin/FormModal';
 import ImagePicker from '@/components/admin/ImagePicker';
 
-const EMPTY = { id: '', name: '', role: '', status: 'online', avatar: '', tags: '', isVerified: true, followers: 0 };
+const EMPTY = { id: '', name: '', role: '', status: 'online', avatar: '', tags: '', is_verified: true, followers: 0 };
 
 export default function AdminMentors() {
   const [mentors, setMentors] = useState<any[]>([]);
@@ -14,7 +14,10 @@ export default function AdminMentors() {
   const [form, setForm] = useState<any>(EMPTY);
   const [loading, setLoading] = useState(false);
 
-  const load = () => fetch('/api/mentors', { cache: 'no-store' }).then(r => r.json()).then(d => setMentors(Array.isArray(d) ? d : [])).catch(() => {});
+  const load = () => fetch('/api/mentors', { cache: 'no-store' }).then(r => r.json()).then(d => {
+    const list = d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+    setMentors(list);
+  }).catch(() => {});
 
   useEffect(() => { load(); }, []);
 
@@ -24,7 +27,12 @@ export default function AdminMentors() {
 
   const handleSave = async () => {
     setLoading(true);
-    const payload = { ...form, tags: form.tags.split(',').map((t: string) => t.trim()).filter(Boolean), followers: Number(form.followers), isVerified: Boolean(form.isVerified) };
+    const payload = { 
+      ...form, 
+      tags: form.tags.split(',').map((t: string) => t.trim()).filter(Boolean), 
+      followers: Number(form.followers), 
+      is_verified: Boolean(form.is_verified || form.isVerified) 
+    };
     await fetch('/api/mentors', { method: editing ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     setModalOpen(false); setLoading(false); load();
   };

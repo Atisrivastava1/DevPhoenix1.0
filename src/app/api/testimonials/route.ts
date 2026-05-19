@@ -1,33 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { NextRequest } from 'next/server';
 import { testimonialsService } from '@/services/supabase/db.service';
 import { hasSupabaseConfig } from '@/services/supabase/client';
-import { sanitizePayload } from '@/lib/api/sanitize-payload';
+import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
+import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
+import { Testimonial } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
-const FILE_PATH = join(process.cwd(), 'src/data/testimonials.json');
-
-function read() {
-  try { return JSON.parse(readFileSync(FILE_PATH, 'utf-8')); }
-  catch { return []; }
-}
-
-function write(data: any[]) {
-  writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
-}
+const cache = getLocalCacheHelper<Testimonial>('testimonials.json');
 
 export async function GET() {
   if (hasSupabaseConfig) {
     try {
       const items = await testimonialsService.getAll();
-      return NextResponse.json(items);
+      return apiResponse.success(items);
     } catch (err: any) {
       console.error('Supabase testimonials GET error, falling back to local:', err);
     }
   }
-  return NextResponse.json(read());
+  return apiResponse.success(cache.read());
 }
 
 export async function POST(req: NextRequest) {
@@ -35,18 +26,28 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     
     // Sanitize and validate payload
-    const sanitized = sanitizePayload.testimonial(body);
-    const newItem = {
+    let sanitized: Testimonial;
+    try {
+      sanitized = sanitizePayload.testimonial(body);
+    } catch (valErr: any) {
+      if (valErr instanceof ValidationError) {
+        console.warn("⚠️ [POST /api/testimonials] Validation Failed:", valErr.message);
+        return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+      }
+      throw valErr;
+    }
+
+    const newItem: Testimonial = {
       ...sanitized,
       created_at: new Date().toISOString(),
     };
 
     if (!hasSupabaseConfig) {
       console.log("[TESTIMONIALS API local cache save]", newItem.id);
-      const items = read();
+      const items = cache.read();
       items.push(newItem);
-      write(items);
-      return NextResponse.json(newItem, { status: 201 });
+      cache.write(items);
+      return apiResponse.success(newItem, 201);
     }
 
     console.log("[TESTIMONIALS API POST PAYLOAD]", JSON.stringify(newItem, null, 2));
@@ -54,28 +55,14 @@ export async function POST(req: NextRequest) {
     try {
       const created = await testimonialsService.create(newItem);
       console.log("[TESTIMONIALS API POST SUCCESS]", JSON.stringify(created, null, 2));
-      return NextResponse.json(created, { status: 201 });
+      return apiResponse.success(created, 201);
     } catch (dbErr: any) {
       console.error('[TESTIMONIALS API POST SUPABASE ERROR]', dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database insert operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database insert operation failed", "DATABASE_INSERT_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[TESTIMONIALS API POST SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: error.status || 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
 
@@ -83,11 +70,21 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     if (!body.id) {
-      return NextResponse.json({ error: 'Testimonial ID is required' }, { status: 400 });
+      return apiResponse.badRequest("Testimonial ID is required", "MISSING_REQUIRED_FIELD");
     }
 
     // Sanitize and validate payload
-    const sanitized = sanitizePayload.testimonial(body);
+    let sanitized: Testimonial;
+    try {
+      sanitized = sanitizePayload.testimonial(body);
+    } catch (valErr: any) {
+      if (valErr instanceof ValidationError) {
+        console.warn(`⚠️ [PUT /api/testimonials] Validation Failed for ${body.id}:`, valErr.message);
+        return apiResponse.badRequest(valErr.message, "VALIDATION_FAILED");
+      }
+      throw valErr;
+    }
+
     const updatedPayload = {
       ...sanitized,
       updated_at: new Date().toISOString(),
@@ -95,12 +92,12 @@ export async function PUT(req: NextRequest) {
 
     if (!hasSupabaseConfig) {
       console.log("[TESTIMONIALS API local cache update]", body.id);
-      const items = read();
-      const idx = items.findIndex((i: any) => i.id === body.id);
-      if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      const items = cache.read();
+      const idx = items.findIndex((i) => i.id === body.id);
+      if (idx === -1) return apiResponse.notFound("Testimonial not found");
       items[idx] = { ...items[idx], ...updatedPayload };
-      write(items);
-      return NextResponse.json(items[idx]);
+      cache.write(items);
+      return apiResponse.success(items[idx]);
     }
 
     console.log("[TESTIMONIALS API PUT PAYLOAD]", JSON.stringify(updatedPayload, null, 2));
@@ -108,28 +105,14 @@ export async function PUT(req: NextRequest) {
     try {
       const updated = await testimonialsService.update(body.id, updatedPayload);
       console.log("[TESTIMONIALS API PUT SUCCESS]", JSON.stringify(updated, null, 2));
-      return NextResponse.json(updated);
+      return apiResponse.success(updated);
     } catch (dbErr: any) {
       console.error('[TESTIMONIALS API PUT SUPABASE ERROR]', dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database update operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database update operation failed", "DATABASE_UPDATE_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[TESTIMONIALS API PUT SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: error.status || 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
 
@@ -137,41 +120,27 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
     if (!id) {
-      return NextResponse.json({ error: 'Testimonial ID is required' }, { status: 400 });
+      return apiResponse.badRequest("Testimonial ID is required", "MISSING_REQUIRED_FIELD");
     }
 
     console.log("[TESTIMONIALS API DELETE ID]", id);
 
     if (!hasSupabaseConfig) {
-      write(read().filter((i: any) => i.id !== id));
-      return NextResponse.json({ success: true });
+      const items = cache.read();
+      cache.write(items.filter((i) => i.id !== id));
+      return apiResponse.success({ success: true });
     }
 
     try {
       await testimonialsService.delete(id);
       console.log("[TESTIMONIALS API DELETE SUCCESS]");
-      return NextResponse.json({ success: true });
+      return apiResponse.success({ success: true });
     } catch (dbErr: any) {
       console.error('[TESTIMONIALS API DELETE SUPABASE ERROR]', dbErr);
-      return NextResponse.json(
-        {
-          success: false,
-          error: dbErr.message || "Database delete operation failed",
-          details: dbErr
-        },
-        { status: 500 }
-      );
+      return apiResponse.error(dbErr.message || "Database delete operation failed", "DATABASE_DELETE_FAILED", dbErr);
     }
   } catch (error: any) {
     console.error("[TESTIMONIALS API DELETE SERVER ERROR]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to process request",
-        details: error
-      },
-      { status: 500 }
-    );
+    return apiResponse.error(error.message || "Failed to process request", "SERVER_ERROR");
   }
 }
-
