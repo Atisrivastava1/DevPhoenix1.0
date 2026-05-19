@@ -1,9 +1,10 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { blogPosts } from "@/data/blog";
 import { blogsService } from "@/services/supabase/db.service";
 import { hasSupabaseConfig } from "@/services/supabase/client";
-import { apiResponse, getLocalCacheHelper, slugify } from "@/lib/api-utils";
+import { apiResponse, getLocalCacheHelper } from "@/lib/api-utils";
 import { BlogCMS } from "@/types/cms-schema";
+import { sanitizePayload } from "@/lib/api/sanitize-payload";
 
 export const dynamic = "force-dynamic";
 
@@ -39,29 +40,49 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    if (!body.title?.trim()) {
-      return apiResponse.badRequest("Article title is required");
-    }
-
-    const cleanSlug = slugify(body.slug || body.title);
+    
+    // Sanitize and validate payload
+    const sanitized = sanitizePayload.blog(body);
     const newPost: BlogCMS = {
-      ...body,
-      id: body.id || `blog-${Date.now()}`,
-      slug: cleanSlug,
+      ...sanitized,
       created_at: new Date().toISOString(),
     };
 
     if (!hasSupabaseConfig) {
+      console.log("[BLOGS API local cache save]", newPost.id);
       const list = cache.read();
       list.unshift(newPost);
       cache.write(list);
       return apiResponse.success(newPost, 201);
     }
 
-    const result = await blogsService.create(newPost);
-    return apiResponse.success(result, 201);
+    console.log("[BLOGS API POST PAYLOAD]", JSON.stringify(newPost, null, 2));
+
+    try {
+      const result = await blogsService.create(newPost);
+      console.log("[BLOGS API POST SUCCESS]", JSON.stringify(result, null, 2));
+      return apiResponse.success(result, 201);
+    } catch (dbErr: any) {
+      console.error("[BLOGS API POST SUPABASE ERROR]", dbErr);
+      return NextResponse.json(
+        {
+          success: false,
+          error: dbErr.message || "Database insert operation failed",
+          details: dbErr
+        },
+        { status: 500 }
+      );
+    }
   } catch (error: any) {
-    return apiResponse.error(error.message);
+    console.error("[BLOGS API POST SERVER ERROR]", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to process request",
+        details: error
+      },
+      { status: error.status || 500 }
+    );
   }
 }
 
@@ -72,14 +93,15 @@ export async function PUT(req: NextRequest) {
       return apiResponse.badRequest("Article ID is required");
     }
 
-    const cleanSlug = slugify(body.slug || body.title || body.id);
+    // Sanitize and validate payload
+    const sanitized = sanitizePayload.blog(body);
     const updatedPayload = {
-      ...body,
-      slug: cleanSlug,
+      ...sanitized,
       updated_at: new Date().toISOString(),
     };
 
     if (!hasSupabaseConfig) {
+      console.log("[BLOGS API local cache update]", body.id);
       const list = cache.read();
       const idx = list.findIndex((p) => p.id === body.id);
       if (idx === -1) return apiResponse.notFound("Article not found");
@@ -88,10 +110,33 @@ export async function PUT(req: NextRequest) {
       return apiResponse.success(list[idx]);
     }
 
-    const result = await blogsService.update(body.id, updatedPayload);
-    return apiResponse.success(result);
+    console.log("[BLOGS API PUT PAYLOAD]", JSON.stringify(updatedPayload, null, 2));
+
+    try {
+      const result = await blogsService.update(body.id, updatedPayload);
+      console.log("[BLOGS API PUT SUCCESS]", JSON.stringify(result, null, 2));
+      return apiResponse.success(result);
+    } catch (dbErr: any) {
+      console.error("[BLOGS API PUT SUPABASE ERROR]", dbErr);
+      return NextResponse.json(
+        {
+          success: false,
+          error: dbErr.message || "Database update operation failed",
+          details: dbErr
+        },
+        { status: 500 }
+      );
+    }
   } catch (error: any) {
-    return apiResponse.error(error.message);
+    console.error("[BLOGS API PUT SERVER ERROR]", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to process request",
+        details: error
+      },
+      { status: error.status || 500 }
+    );
   }
 }
 
@@ -108,9 +153,32 @@ export async function DELETE(req: NextRequest) {
       return apiResponse.success({ success: true });
     }
 
-    await blogsService.delete(id);
-    return apiResponse.success({ success: true });
+    console.log("[BLOGS API DELETE ID]", id);
+
+    try {
+      await blogsService.delete(id);
+      console.log("[BLOGS API DELETE SUCCESS]");
+      return apiResponse.success({ success: true });
+    } catch (dbErr: any) {
+      console.error("[BLOGS API DELETE SUPABASE ERROR]", dbErr);
+      return NextResponse.json(
+        {
+          success: false,
+          error: dbErr.message || "Database delete operation failed",
+          details: dbErr
+        },
+        { status: 500 }
+      );
+    }
   } catch (error: any) {
-    return apiResponse.error(error.message);
+    console.error("[BLOGS API DELETE SERVER ERROR]", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to process request",
+        details: error
+      },
+      { status: 500 }
+    );
   }
 }

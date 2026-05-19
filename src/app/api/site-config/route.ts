@@ -3,9 +3,9 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { siteConfigService } from '@/services/supabase/db.service';
 import { hasSupabaseConfig } from '@/services/supabase/client';
+import { sanitizePayload } from '@/lib/api/sanitize-payload';
 
 export const dynamic = 'force-dynamic';
-
 
 const FILE_PATH = join(process.cwd(), 'src/data/site-config.json');
 
@@ -27,20 +27,46 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
+    
+    // Sanitize and validate payload
+    const sanitized = sanitizePayload.siteConfig(body);
 
-  if (hasSupabaseConfig) {
-    try {
-      const updated = await siteConfigService.update(body);
-      return NextResponse.json(updated);
-    } catch (err: any) {
-      console.error('Supabase site-config PUT error, falling back to local:', err);
+    if (hasSupabaseConfig) {
+      console.log("[SITE CONFIG API PUT PAYLOAD]", JSON.stringify(sanitized, null, 2));
+      try {
+        const updatedConfig = await siteConfigService.update(sanitized);
+        console.log("[SITE CONFIG API PUT SUCCESS]", JSON.stringify(updatedConfig, null, 2));
+        return NextResponse.json(updatedConfig);
+      } catch (dbErr: any) {
+        console.error('[SITE CONFIG API PUT SUPABASE ERROR]', dbErr);
+        return NextResponse.json(
+          {
+            success: false,
+            error: dbErr.message || "Database site-config update failed",
+            details: dbErr
+          },
+          { status: 500 }
+        );
+      }
     }
-  }
 
-  const current = read();
-  const updated = { ...current, ...body };
-  writeFileSync(FILE_PATH, JSON.stringify(updated, null, 2));
-  return NextResponse.json(updated);
+    console.log("[SITE CONFIG API local cache save]");
+    const current = read();
+    const updated = { ...current, ...sanitized };
+    writeFileSync(FILE_PATH, JSON.stringify(updated, null, 2));
+    return NextResponse.json(updated);
+  } catch (error: any) {
+    console.error("[SITE CONFIG API PUT SERVER ERROR]", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to process request",
+        details: error
+      },
+      { status: error.status || 500 }
+    );
+  }
 }
 

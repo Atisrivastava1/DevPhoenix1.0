@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { visualBlocksService } from '@/services/supabase/db.service';
+import { hasSupabaseConfig } from '@/services/supabase/client';
+import { sanitizePayload } from '@/lib/api/sanitize-payload';
 
 export const dynamic = 'force-dynamic';
-
 
 const FILE_PATH = join(process.cwd(), 'src/data/visual-blocks-dynamic.json');
 
@@ -257,9 +259,6 @@ const INITIAL_SEED = [
   }
 ];
 
-import { visualBlocksService } from '@/services/supabase/db.service';
-import { hasSupabaseConfig } from '@/services/supabase/client';
-
 function read() {
   if (!existsSync(FILE_PATH)) {
     writeFileSync(FILE_PATH, JSON.stringify(INITIAL_SEED, null, 2), 'utf-8');
@@ -302,19 +301,41 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: 'Payload must be an array of visual blocks' }, { status: 400 });
     }
 
+    // Sanitize and validate every block in the array
+    const sanitizedArray = payload.map((block: any) => sanitizePayload.visualBlock(block));
+
     if (hasSupabaseConfig) {
+      console.log(`[VISUAL BLOCKS API PUT ARRAY PAYLOAD COUNT: ${sanitizedArray.length}]`);
       try {
-        await visualBlocksService.saveAll(payload);
+        await visualBlocksService.saveAll(sanitizedArray);
+        console.log("[VISUAL BLOCKS API PUT SUCCESS]");
         return NextResponse.json({ success: true });
-      } catch (err: any) {
-        console.error('Supabase visual-blocks PUT error, falling back to local:', err);
+      } catch (dbErr: any) {
+        console.error('[VISUAL BLOCKS API PUT SUPABASE ERROR]', dbErr);
+        return NextResponse.json(
+          {
+            success: false,
+            error: dbErr.message || "Database visual-blocks save operation failed",
+            details: dbErr
+          },
+          { status: 500 }
+        );
       }
     }
 
-    write(payload);
+    console.log("[VISUAL BLOCKS API local cache save]");
+    write(sanitizedArray);
     return NextResponse.json({ success: true });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Server error' }, { status: 500 });
+    console.error("[VISUAL BLOCKS API PUT SERVER ERROR]", err);
+    return NextResponse.json(
+      {
+        success: false,
+        error: err.message || 'Failed to process request',
+        details: err
+      },
+      { status: err.status || 500 }
+    );
   }
 }
 

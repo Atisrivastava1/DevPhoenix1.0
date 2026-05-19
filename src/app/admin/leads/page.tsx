@@ -68,12 +68,12 @@ function LeadDetailPanel({ lead, onClose, onUpdate }: {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: lead.id, status: newStatus }),
       });
-      if (!res.ok) throw new Error();
-      const updated = await res.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update lead status.');
       showToast(`Status updated to "${newStatus}"`, 'success');
-      onUpdate(updated);
-    } catch {
-      showToast('Failed to update lead status.', 'error');
+      onUpdate(data);
+    } catch (err: any) {
+      showToast(err.message || 'Failed to update lead status.', 'error');
     }
   };
 
@@ -86,13 +86,13 @@ function LeadDetailPanel({ lead, onClose, onUpdate }: {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: lead.id, action: 'add_note', note }),
       });
-      if (!res.ok) throw new Error();
-      const updated = await res.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to add note.');
       setNote('');
       showToast('Note added successfully!', 'success');
-      onUpdate(updated);
-    } catch {
-      showToast('Failed to add note.', 'error');
+      onUpdate(data);
+    } catch (err: any) {
+      showToast(err.message || 'Failed to add note.', 'error');
     } finally {
       setSaving(false);
     }

@@ -20,32 +20,103 @@ export async function GET() {
   }
 }
 
+// Strict payload validation & mapping to exact DB columns to prevent NOT NULL and extra-field constraint errors
+function validateAndMapProgram(body: any): { program: any; error?: string } {
+  const rawTitle = body.title?.trim();
+  if (!rawTitle) {
+    return { program: null, error: "Program title is required" };
+  }
+
+  // Auto-generate slug safely if empty
+  const rawSlug = body.slug?.trim() || rawTitle;
+  const cleanSlug = slugify(rawSlug);
+  if (!cleanSlug) {
+    return { program: null, error: "A valid slug or title is required to generate the program identifier" };
+  }
+
+  // Validate all required schema fields (marked NOT NULL in Supabase)
+  const requiredFields = [
+    { key: "description", label: "Description" },
+    { key: "category", label: "Category" },
+    { key: "level", label: "Level" },
+    { key: "duration", label: "Duration" },
+    { key: "type", label: "Type" },
+    { key: "price", label: "Price" },
+    { key: "practicalHours", label: "Practical Hours" },
+    { key: "image", label: "Cover Image" }
+  ];
+
+  for (const field of requiredFields) {
+    const val = body[field.key];
+    if (val === undefined || val === null || (typeof val === "string" && val.trim() === "")) {
+      return { program: null, error: `${field.label} is required` };
+    }
+  }
+
+  // Exclude flat contaminated properties like originalPrice, discountedPrice, emi, includes from top-level insert
+  const program: any = {
+    id: body.id || cleanSlug,
+    slug: cleanSlug,
+    title: rawTitle,
+    description: body.description.trim(),
+    overview: body.overview?.trim() || null,
+    category: body.category.trim(),
+    level: body.level.trim(),
+    duration: body.duration.trim(),
+    type: body.type.trim(),
+    price: body.price.trim(),
+    practicalHours: body.practicalHours.trim(),
+    tags: Array.isArray(body.tags) ? body.tags : [],
+    image: body.image.trim(),
+    outcomes: Array.isArray(body.outcomes) ? body.outcomes : [],
+    projects: typeof body.projects === "number" ? body.projects : Number(body.projects) || 0,
+    curriculum: Array.isArray(body.curriculum) ? body.curriculum : [],
+    faqs: Array.isArray(body.faqs) ? body.faqs : [],
+    pricingDetails: body.pricingDetails || {},
+    tools: Array.isArray(body.tools) ? body.tools : [],
+    certifications: Array.isArray(body.certifications) ? body.certifications : [],
+  };
+
+  return { program };
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    if (!body.title?.trim()) {
-      return apiResponse.badRequest("Program title is required");
+    
+    // Validate and sanitize payload
+    const { program, error } = validateAndMapProgram(body);
+    if (error) {
+      console.warn("⚠️ [POST /api/programs] Validation Failed:", error);
+      return apiResponse.badRequest(error);
     }
 
-    const cleanSlug = slugify(body.slug || body.title);
     const newProgram: ProgramCMS = {
-      ...body,
-      id: body.id || cleanSlug,
-      slug: cleanSlug,
+      ...program,
       created_at: new Date().toISOString(),
     };
 
     if (!hasSupabaseConfig) {
+      console.log("ℹ️ [POST /api/programs] Saving to local cache:", newProgram.id);
       const list = cache.read();
       list.push(newProgram);
       cache.write(list);
       return apiResponse.success(newProgram, 201);
     }
 
-    const result = await programsService.create(newProgram);
-    return apiResponse.success(result, 201);
+    console.log("🚀 [POST /api/programs] Inserting to Supabase. Outgoing Payload:", JSON.stringify(newProgram, null, 2));
+
+    try {
+      const result = await programsService.create(newProgram);
+      console.log("✅ [POST /api/programs] Supabase Insert Success:", JSON.stringify(result, null, 2));
+      return apiResponse.success(result, 201);
+    } catch (dbErr: any) {
+      console.error("❌ [POST /api/programs] Supabase Database Error:", dbErr);
+      return apiResponse.error(dbErr.message || "Database insert operation failed", 500);
+    }
   } catch (error: any) {
-    return apiResponse.error(error.message);
+    console.error("❌ [POST /api/programs] Server Error:", error);
+    return apiResponse.error(error.message || "Failed to process request", 500);
   }
 }
 
@@ -56,14 +127,20 @@ export async function PUT(req: NextRequest) {
       return apiResponse.badRequest("Program ID is required");
     }
 
-    const cleanSlug = slugify(body.slug || body.title || body.id);
+    // Validate and sanitize payload
+    const { program, error } = validateAndMapProgram(body);
+    if (error) {
+      console.warn(`⚠️ [PUT /api/programs] Validation Failed for ${body.id}:`, error);
+      return apiResponse.badRequest(error);
+    }
+
     const updatedPayload = {
-      ...body,
-      slug: cleanSlug,
+      ...program,
       updated_at: new Date().toISOString(),
     };
 
     if (!hasSupabaseConfig) {
+      console.log("ℹ️ [PUT /api/programs] Updating local cache:", body.id);
       const list = cache.read();
       const idx = list.findIndex((p) => p.id === body.id);
       if (idx === -1) return apiResponse.notFound("Program not found");
@@ -72,10 +149,19 @@ export async function PUT(req: NextRequest) {
       return apiResponse.success(list[idx]);
     }
 
-    const result = await programsService.update(body.id, updatedPayload);
-    return apiResponse.success(result);
+    console.log(`🚀 [PUT /api/programs] Updating Supabase for ${body.id}. Outgoing Payload:`, JSON.stringify(updatedPayload, null, 2));
+
+    try {
+      const result = await programsService.update(body.id, updatedPayload);
+      console.log("✅ [PUT /api/programs] Supabase Update Success:", JSON.stringify(result, null, 2));
+      return apiResponse.success(result);
+    } catch (dbErr: any) {
+      console.error("❌ [PUT /api/programs] Supabase Database Error:", dbErr);
+      return apiResponse.error(dbErr.message || "Database update operation failed", 500);
+    }
   } catch (error: any) {
-    return apiResponse.error(error.message);
+    console.error("❌ [PUT /api/programs] Server Error:", error);
+    return apiResponse.error(error.message || "Failed to process request", 500);
   }
 }
 

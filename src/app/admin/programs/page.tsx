@@ -73,10 +73,44 @@ export default function AdminPrograms() {
   };
 
   const handleSave = async () => {
+    // 1. Strict UI Form Field Validation
     if (!form.title?.trim()) {
       showToast('Program title is required!', 'error');
       return;
     }
+    if (!form.description?.trim()) {
+      showToast('Short description is required!', 'error');
+      return;
+    }
+    if (!form.category?.trim()) {
+      showToast('Program category is required!', 'error');
+      return;
+    }
+    if (!form.level?.trim()) {
+      showToast('Difficulty level is required!', 'error');
+      return;
+    }
+    if (!form.duration?.trim()) {
+      showToast('Program duration is required!', 'error');
+      return;
+    }
+    if (!form.type?.trim()) {
+      showToast('Program type is required!', 'error');
+      return;
+    }
+    if (!form.price?.trim()) {
+      showToast('Display price is required!', 'error');
+      return;
+    }
+    if (!form.practicalHours?.trim()) {
+      showToast('Practical hours count is required!', 'error');
+      return;
+    }
+    if (!form.image?.trim()) {
+      showToast('Program cover image is required!', 'error');
+      return;
+    }
+
     setLoading(true);
     
     // Auto-clean & format slug safely
@@ -106,14 +140,19 @@ export default function AdminPrograms() {
     const method = editing ? 'PUT' : 'POST';
     try {
       const res = await fetch('/api/programs', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to save program details.');
+      }
+      
       showToast(`Program "${form.title}" saved successfully!`, 'success');
       setModalOpen(false);
       setNewModule(EMPTY_MODULE);
       setNewFaq(EMPTY_FAQ);
       load();
-    } catch {
-      showToast('Failed to save program details.', 'error');
+    } catch (err: any) {
+      showToast(err.message || 'Failed to save program details.', 'error');
     } finally {
       setLoading(false);
     }

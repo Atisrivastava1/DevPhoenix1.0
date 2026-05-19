@@ -4,6 +4,7 @@ import { hasSupabaseConfig } from '@/services/supabase/client';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { learningPathsData } from '@/data/learningPaths';
+import { sanitizePayload } from '@/lib/api/sanitize-payload';
 
 export const dynamic = 'force-dynamic';
 
@@ -72,71 +73,147 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const id = body.id || `path-${Date.now()}`;
-  const newPath = { 
-    ...body, 
-    id, 
-    included: Array.isArray(body.included) ? body.included : [],
-    tags: Array.isArray(body.tags) ? body.tags : [],
-    build: Array.isArray(body.build) ? body.build : []
-  };
-
-  console.log('POST /api/learning-paths invoked with body:', body);
-
-  if (!hasSupabaseConfig) {
-    const paths = readLocalPaths();
-    paths.push(newPath);
-    writeLocalPaths(paths);
-    return NextResponse.json(newPath, { status: 201 });
-  }
-
   try {
-    const created = await learningPathsService.create(newPath);
-    return NextResponse.json(created, { status: 201 });
+    const body = await req.json();
+    
+    // Sanitize and validate payload
+    const sanitized = sanitizePayload.learningPath(body);
+    const newPath = {
+      ...sanitized,
+      created_at: new Date().toISOString(),
+    };
+
+    if (!hasSupabaseConfig) {
+      console.log("[LEARNING PATHS API local cache save]", newPath.id);
+      const paths = readLocalPaths();
+      paths.push(newPath);
+      writeLocalPaths(paths);
+      return NextResponse.json(newPath, { status: 201 });
+    }
+
+    console.log('[LEARNING PATHS API POST PAYLOAD]', JSON.stringify(newPath, null, 2));
+
+    try {
+      const created = await learningPathsService.create(newPath);
+      console.log("[LEARNING PATHS API POST SUCCESS]", JSON.stringify(created, null, 2));
+      return NextResponse.json(created, { status: 201 });
+    } catch (dbErr: any) {
+      console.error('[LEARNING PATHS API POST SUPABASE ERROR]', dbErr);
+      return NextResponse.json(
+        {
+          success: false,
+          error: dbErr.message || "Database insert operation failed",
+          details: dbErr
+        },
+        { status: 500 }
+      );
+    }
   } catch (error: any) {
-    console.error('Error creating learning path in Supabase:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[LEARNING PATHS API POST SERVER ERROR]", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to process request",
+        details: error
+      },
+      { status: error.status || 500 }
+    );
   }
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  console.log('PUT /api/learning-paths invoked with body:', body);
-
-  if (!hasSupabaseConfig) {
-    const paths = readLocalPaths();
-    const idx = paths.findIndex((p: any) => p.id === body.id);
-    if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    paths[idx] = { ...paths[idx], ...body };
-    writeLocalPaths(paths);
-    return NextResponse.json(paths[idx]);
-  }
-
   try {
-    const updated = await learningPathsService.update(body.id, body);
-    return NextResponse.json(updated);
+    const body = await req.json();
+    if (!body.id) {
+      return NextResponse.json({ error: 'Learning path ID is required' }, { status: 400 });
+    }
+
+    // Sanitize and validate payload
+    const sanitized = sanitizePayload.learningPath(body);
+    const updatedPayload = {
+      ...sanitized,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (!hasSupabaseConfig) {
+      console.log("[LEARNING PATHS API local cache update]", body.id);
+      const paths = readLocalPaths();
+      const idx = paths.findIndex((p: any) => p.id === body.id);
+      if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      paths[idx] = { ...paths[idx], ...updatedPayload };
+      writeLocalPaths(paths);
+      return NextResponse.json(paths[idx]);
+    }
+
+    console.log('[LEARNING PATHS API PUT PAYLOAD]', JSON.stringify(updatedPayload, null, 2));
+
+    try {
+      const updated = await learningPathsService.update(body.id, updatedPayload);
+      console.log("[LEARNING PATHS API PUT SUCCESS]", JSON.stringify(updated, null, 2));
+      return NextResponse.json(updated);
+    } catch (dbErr: any) {
+      console.error('[LEARNING PATHS API PUT SUPABASE ERROR]', dbErr);
+      return NextResponse.json(
+        {
+          success: false,
+          error: dbErr.message || "Database update operation failed",
+          details: dbErr
+        },
+        { status: 500 }
+      );
+    }
   } catch (error: any) {
-    console.error('Error updating learning path in Supabase:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[LEARNING PATHS API PUT SERVER ERROR]", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to process request",
+        details: error
+      },
+      { status: error.status || 500 }
+    );
   }
 }
 
 export async function DELETE(req: NextRequest) {
-  const { id } = await req.json();
-  console.log(`DELETE /api/learning-paths invoked for id = ${id}`);
-
-  if (!hasSupabaseConfig) {
-    const paths = readLocalPaths();
-    writeLocalPaths(paths.filter((p: any) => p.id !== id));
-    return NextResponse.json({ success: true });
-  }
-
   try {
-    await learningPathsService.delete(id);
-    return NextResponse.json({ success: true });
+    const { id } = await req.json();
+    if (!id) {
+      return NextResponse.json({ error: 'Learning path ID is required' }, { status: 400 });
+    }
+
+    console.log(`[LEARNING PATHS API DELETE ID]`, id);
+
+    if (!hasSupabaseConfig) {
+      const paths = readLocalPaths();
+      writeLocalPaths(paths.filter((p: any) => p.id !== id));
+      return NextResponse.json({ success: true });
+    }
+
+    try {
+      await learningPathsService.delete(id);
+      console.log("[LEARNING PATHS API DELETE SUCCESS]");
+      return NextResponse.json({ success: true });
+    } catch (dbErr: any) {
+      console.error('[LEARNING PATHS API DELETE SUPABASE ERROR]', dbErr);
+      return NextResponse.json(
+        {
+          success: false,
+          error: dbErr.message || "Database delete operation failed",
+          details: dbErr
+        },
+        { status: 500 }
+      );
+    }
   } catch (error: any) {
-    console.error('Error deleting learning path from Supabase:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[LEARNING PATHS API DELETE SERVER ERROR]", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to process request",
+        details: error
+      },
+      { status: 500 }
+    );
   }
 }

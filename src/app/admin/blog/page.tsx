@@ -55,12 +55,15 @@ export default function AdminBlog() {
     const payload = { ...form, slug };
     try {
       const res = await fetch('/api/blog', { method: editing ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to save article.');
+      }
       showToast(`Article "${form.title}" published/saved successfully!`, 'success');
       setModalOpen(false);
       load();
-    } catch {
-      showToast('Failed to save article.', 'error');
+    } catch (err: any) {
+      showToast(err.message || 'Failed to save article.', 'error');
     } finally {
       setLoading(false);
     }
