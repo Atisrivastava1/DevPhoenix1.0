@@ -1,20 +1,18 @@
 import { MetadataRoute } from 'next';
-import { blogPosts } from '@/data/blog';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { blogsService, programsService } from "@/services/mongodb/db.service";
+import { hasMongoConfig } from "@/services/mongodb/client";
 
 const BASE_URL = 'https://devphoenix.tech';
 
-function getPrograms() {
-  try {
-    return JSON.parse(readFileSync(join(process.cwd(), 'src/data/programs-static.json'), 'utf-8'));
-  } catch {
-    return [];
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  let programs = [];
+  let blogs = [];
+  if (hasMongoConfig) {
+    try {
+      programs = await programsService.getAll();
+      blogs = await blogsService.getAll();
+    } catch {}
   }
-}
-
-export default function sitemap(): MetadataRoute.Sitemap {
-  const programs = getPrograms();
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE_URL,                  lastModified: new Date(), changeFrequency: 'daily',   priority: 1.0 },
@@ -34,9 +32,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+  const blogPages: MetadataRoute.Sitemap = blogs.map((post: any) => ({
     url: `${BASE_URL}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
+    lastModified: new Date(post.updated_at || post.published_at || post.created_at || Date.now()),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }));

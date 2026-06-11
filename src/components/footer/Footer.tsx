@@ -98,23 +98,22 @@ export function Footer() {
   const [cfg, setCfg] = useState(FALLBACK);
 
   useEffect(() => {
-    fetch('/api/site-config')
+    fetch('/api/site-config', { cache: 'no-store' })
       .then(r => r.json())
-      .then(data => {
-        if (data && typeof data === 'object') {
-          setCfg({
-            contact: data.contact || FALLBACK.contact,
-            socials: data.socials || FALLBACK.socials,
-            footerColumns: data.footerColumns || FALLBACK.footerColumns,
-            footer: data.footer || FALLBACK.footer,
-          });
-        }
+      .then(d => {
+        const payload = d && d.success && d.data ? d.data : (d || {});
+        setCfg({
+          contact: payload.contact || FALLBACK.contact,
+          socials: payload.socials || FALLBACK.socials,
+          footerColumns: payload.footerColumns || FALLBACK.footerColumns,
+          footer: payload.footer || FALLBACK.footer,
+        });
       })
       .catch(() => {}); // keep fallback on error
   }, []);
 
   const socials = Object.entries(cfg.socials)
-    .filter(([key]) => SOCIAL_ICONS[key])
+    .filter(([key, href]) => SOCIAL_ICONS[key] && href && (href as string).trim() !== '')
     .map(([key, href]) => ({ key, href: href as string, icon: SOCIAL_ICONS[key] }));
 
   return (
@@ -127,11 +126,11 @@ export function Footer() {
 
           {/* Brand column */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="relative w-9 h-9">
+            <div className="flex items-center gap-4">
+              <div className="relative w-16 h-16">
                 <Image src="/logo/devphoenix-logo.png" alt="DevPhoeniX Logo" fill className="object-contain" />
               </div>
-              <span className="text-white font-extrabold text-xl tracking-tight">DevPhoeniX</span>
+              <span className="text-white font-extrabold text-3xl tracking-tight">DevPhoeniX</span>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
               {cfg.footer.tagline}
@@ -150,28 +149,32 @@ export function Footer() {
           <div>
             <h4 className="text-white text-sm font-bold uppercase tracking-widest mb-5">Get in Touch</h4>
             <ul className="space-y-3.5">
-              <li>
-                <a
-                  href={`mailto:${cfg.contact.email}`}
-                  className="flex items-center gap-3 text-slate-400 text-sm hover:text-orange-400 transition-colors group"
-                >
-                  <span className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-orange-500/30 group-hover:bg-orange-500/10 transition-all">
-                    <Mail className="w-4 h-4" />
-                  </span>
-                  {cfg.contact.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${cfg.contact.phone}`}
-                  className="flex items-center gap-3 text-slate-400 text-sm hover:text-orange-400 transition-colors group"
-                >
-                  <span className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-orange-500/30 group-hover:bg-orange-500/10 transition-all">
-                    <Phone className="w-4 h-4" />
-                  </span>
-                  {cfg.contact.phone}
-                </a>
-              </li>
+              {cfg.contact.email && cfg.contact.email.trim() !== '' && (
+                <li>
+                  <a
+                    href={`mailto:${cfg.contact.email}`}
+                    className="flex items-center gap-3 text-slate-400 text-sm hover:text-orange-400 transition-colors group"
+                  >
+                    <span className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-orange-500/30 group-hover:bg-orange-500/10 transition-all">
+                      <Mail className="w-4 h-4" />
+                    </span>
+                    {cfg.contact.email}
+                  </a>
+                </li>
+              )}
+              {cfg.contact.phone && cfg.contact.phone.trim() !== '' && (
+                <li>
+                  <a
+                    href={`tel:${cfg.contact.phone}`}
+                    className="flex items-center gap-3 text-slate-400 text-sm hover:text-orange-400 transition-colors group"
+                  >
+                    <span className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-orange-500/30 group-hover:bg-orange-500/10 transition-all">
+                      <Phone className="w-4 h-4" />
+                    </span>
+                    {cfg.contact.phone}
+                  </a>
+                </li>
+              )}
             </ul>
 
             {/* Socials */}

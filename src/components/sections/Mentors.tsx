@@ -44,7 +44,7 @@ export const Mentors = ({
   autoplay?: boolean;
 }) => {
   return (
-    <SectionWrapper background="white" className="py-20 lg:py-24 relative overflow-hidden">
+    <SectionWrapper background="white" className="!pt-2 lg:!pt-6 !pb-20 lg:!pb-24 relative overflow-hidden">
       
       {/* Animated Grid Background */}
       <div className="absolute inset-0 opacity-30 pointer-events-none z-0">
@@ -97,7 +97,7 @@ export const Mentors = ({
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-4 lg:gap-8 justify-items-center">
+        <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 md:gap-4 lg:gap-8 justify-items-center pb-8 md:pb-0 md:grid-cols-2 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
           {mentors.map((mentor, index) => (
             <motion.div
               key={mentor.name}
@@ -105,7 +105,7 @@ export const Mentors = ({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.15, duration: 0.6, ease: "easeOut" }}
-              className="w-full"
+              className="w-full min-w-[85vw] sm:min-w-[320px] md:min-w-0 snap-center shrink-0"
             >
               <MentorCard mentor={mentor as any} />
             </motion.div>

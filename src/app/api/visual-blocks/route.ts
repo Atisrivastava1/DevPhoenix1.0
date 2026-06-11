@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { visualBlocksService } from '@/services/supabase/db.service';
-import { hasSupabaseConfig } from '@/services/supabase/client';
+import { visualBlocksService } from '@/services/mongodb/db.service';
+import { hasMongoConfig } from '@/services/mongodb/client';
 import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
 import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
 
@@ -259,7 +259,7 @@ const INITIAL_SEED = [
 const cache = getLocalCacheHelper<any>('visual-blocks-dynamic.json', undefined, INITIAL_SEED);
 
 export async function GET() {
-  if (hasSupabaseConfig) {
+  if (hasMongoConfig) {
     try {
       const items = await visualBlocksService.getAll();
       if (items && items.length > 0) {
@@ -294,7 +294,7 @@ export async function PUT(req: NextRequest) {
       }
     });
 
-    if (hasSupabaseConfig) {
+    if (hasMongoConfig) {
       console.log(`[VISUAL BLOCKS API PUT ARRAY PAYLOAD COUNT: ${sanitizedArray.length}]`);
       try {
         await visualBlocksService.saveAll(sanitizedArray);

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { programsService } from "@/services/supabase/db.service";
-import { hasSupabaseConfig } from "@/services/supabase/client";
+import { programsService } from "@/services/mongodb/db.service";
+import { hasMongoConfig } from "@/services/mongodb/client";
 import { apiResponse, getLocalCacheHelper } from "@/lib/api-utils";
 import { sanitizePayload, ValidationError } from "@/lib/api/sanitize-payload";
 import { Program } from "@/types";
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 const cache = getLocalCacheHelper<Program>("programs-dynamic.json", "programs-static.json");
 
 export async function GET() {
-  if (!hasSupabaseConfig) {
+  if (!hasMongoConfig) {
     return apiResponse.success(cache.read());
   }
   try {
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("ℹ️ [POST /api/programs] Saving to local cache:", newProgram.id);
       const list = cache.read();
       list.push(newProgram);
@@ -91,7 +91,7 @@ export async function PUT(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("ℹ️ [PUT /api/programs] Updating local cache:", body.id);
       const list = cache.read();
       const idx = list.findIndex((p) => p.id === body.id);
@@ -124,7 +124,7 @@ export async function DELETE(req: NextRequest) {
       return apiResponse.badRequest("Program ID is required", "MISSING_REQUIRED_FIELD");
     }
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       const list = cache.read();
       cache.write(list.filter((p) => p.id !== id));
       return apiResponse.success({ success: true });

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { leadsService } from "@/services/supabase/db.service";
-import { hasSupabaseConfig } from "@/services/supabase/client";
+import { leadsService } from "@/services/mongodb/db.service";
+import { hasMongoConfig } from "@/services/mongodb/client";
 import { apiResponse, getLocalCacheHelper } from "@/lib/api-utils";
 import { Lead } from "@/types";
 import { sanitizePayload, ValidationError } from "@/lib/api/sanitize-payload";
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search");
 
     let leads: Lead[] = [];
-    if (hasSupabaseConfig) {
+    if (hasMongoConfig) {
       try {
         leads = await leadsService.getAll();
       } catch (err) {
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[LEADS API local cache save]", newLead.id);
       const list = cache.read();
       list.unshift(newLead);
@@ -101,7 +101,7 @@ export async function PUT(req: NextRequest) {
       return apiResponse.badRequest("Lead ID is required", "MISSING_REQUIRED_FIELD");
     }
 
-    if (hasSupabaseConfig) {
+    if (hasMongoConfig) {
       const existingLeads = await leadsService.getAll();
       const found = existingLeads.find((l) => l.id === body.id);
       if (!found) return apiResponse.notFound("Lead not found");
@@ -198,7 +198,7 @@ export async function DELETE(req: NextRequest) {
 
     console.log(`[LEADS API DELETE ID]`, id);
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       const list = cache.read();
       cache.write(list.filter((l) => l.id !== id));
       return apiResponse.success({ success: true });

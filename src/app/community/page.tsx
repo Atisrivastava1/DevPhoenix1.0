@@ -24,10 +24,11 @@ export default function CommunityPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/community')
+    fetch('/api/community', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
-        setData(d);
+        const payload = d && d.success && d.data ? d.data : d;
+        setData(payload);
         setLoading(false);
       })
       .catch(() => setLoading(false));

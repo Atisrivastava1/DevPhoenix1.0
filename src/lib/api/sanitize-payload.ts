@@ -160,22 +160,18 @@ export const sanitizePayload = {
    * Site Config sanitizer
    */
   siteConfig(body: any): any {
-    if (!body.hero || typeof body.hero !== "object") {
-      throw new ValidationError("Hero settings are required and must be an object");
-    }
-    if (!body.contact || typeof body.contact !== "object") {
-      throw new ValidationError("Contact info settings are required and must be an object");
-    }
-    if (!body.socials || typeof body.socials !== "object") {
-      throw new ValidationError("Social links settings are required and must be an object");
-    }
-
-    return {
+    const result: any = {
       id: trimString(body.id || "global", "ID"),
-      hero: body.hero,
-      contact: body.contact,
-      socials: body.socials,
     };
+
+    if (body.hero) result.hero = body.hero;
+    if (body.contact) result.contact = body.contact;
+    if (body.socials) result.socials = body.socials;
+    if (body.footer) result.footer = body.footer;
+    if (body.footerColumns) result.footerColumns = body.footerColumns;
+    if (body.navItems) result.navItems = body.navItems;
+
+    return result;
   },
 
   /**
@@ -231,6 +227,21 @@ export const sanitizePayload = {
       build: Array.isArray(body.build) ? body.build : [],
       tags: Array.isArray(body.tags) ? body.tags.map((x: any) => String(x).trim()).filter(Boolean) : [],
       modules: Array.isArray(body.modules) ? body.modules : [],
+    };
+  },
+
+  /**
+   * Opportunities sanitizer
+   */
+  opportunity(body: any): any {
+    return {
+      id: trimString(body.id || `opp-${Date.now()}`, "ID"),
+      title: trimString(body.title, "Deal Title", true),
+      client: trimString(body.client, "Client Name", true),
+      value: trimString(body.value, "Pipeline Value", true),
+      stage: trimString(body.stage, "Stage") || "Discovery",
+      closeDate: trimString(body.closeDate || body.close_date, "Close Date") || "",
+      probability: trimString(body.probability, "Probability") || "0%",
     };
   },
 };

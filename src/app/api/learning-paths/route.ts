@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { learningPathsService } from '@/services/supabase/db.service';
-import { hasSupabaseConfig } from '@/services/supabase/client';
+import { learningPathsService } from '@/services/mongodb/db.service';
+import { hasMongoConfig } from '@/services/mongodb/client';
 import { learningPathsData } from '@/data/learningPaths';
 import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
 import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
@@ -16,7 +16,7 @@ const cache = getLocalCacheHelper<any>('learningPaths-dynamic.json', undefined, 
 
 export async function GET() {
   console.log('GET /api/learning-paths invoked');
-  if (!hasSupabaseConfig) {
+  if (!hasMongoConfig) {
     return apiResponse.success(cache.read());
   }
 
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       created_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[LEARNING PATHS API local cache save]", newPath.id);
       const paths = cache.read();
       paths.push(newPath);
@@ -105,7 +105,7 @@ export async function PUT(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[LEARNING PATHS API local cache update]", body.id);
       const paths = cache.read();
       const idx = paths.findIndex((p) => p.id === body.id);
@@ -140,7 +140,7 @@ export async function DELETE(req: NextRequest) {
 
     console.log(`[LEARNING PATHS API DELETE ID]`, id);
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       const paths = cache.read();
       cache.write(paths.filter((p) => p.id !== id));
       return apiResponse.success({ success: true });

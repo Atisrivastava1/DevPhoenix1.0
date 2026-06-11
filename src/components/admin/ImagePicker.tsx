@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Image from 'next/image';
-import { ImageIcon, Link2, X } from 'lucide-react';
+import { ImageIcon, Link2, X, Upload } from 'lucide-react';
 
 interface ImagePickerProps {
   value: string;
@@ -11,26 +11,64 @@ interface ImagePickerProps {
 
 export default function ImagePicker({ value, onChange, label = 'Image' }: ImagePickerProps) {
   const [tab, setTab] = useState<'url' | 'preview'>('url');
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'shared-uploads');
+
+      const res = await fetch('/api/media', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      
+      onChange(data.url);
+      setTab('preview');
+    } catch (err) {
+      console.error('Image upload error:', err);
+      alert('Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div className="space-y-3">
       <label className="block text-sm font-bold text-slate-700">{label}</label>
 
-      {/* Tab toggle */}
       <div className="flex gap-2">
-        {(['url', 'preview'] as const).map(t => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              tab === t ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            {t === 'url' ? <Link2 className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-            {t === 'url' ? 'Enter URL' : 'Preview'}
-          </button>
-        ))}
+        <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
+          {(['url', 'preview'] as const).map(t => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setTab(t)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                tab === t ? 'bg-[#6366F1] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              {t === 'url' ? <Link2 className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
+              {t === 'url' ? 'Enter URL' : 'Preview'}
+            </button>
+          ))}
+        </div>
+        
+        <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm border ${
+          uploading ? 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+        }`}>
+          <Upload className="w-3 h-3" />
+          {uploading ? 'Uploading...' : 'Upload Image'}
+          <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
+        </label>
       </div>
 
       {tab === 'url' && (

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { testimonialsService } from '@/services/supabase/db.service';
-import { hasSupabaseConfig } from '@/services/supabase/client';
+import { testimonialsService } from '@/services/mongodb/db.service';
+import { hasMongoConfig } from '@/services/mongodb/client';
 import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
 import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
 import { Testimonial } from '@/types';
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 const cache = getLocalCacheHelper<Testimonial>('testimonials.json');
 
 export async function GET() {
-  if (hasSupabaseConfig) {
+  if (hasMongoConfig) {
     try {
       const items = await testimonialsService.getAll();
       return apiResponse.success(items);
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       created_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[TESTIMONIALS API local cache save]", newItem.id);
       const items = cache.read();
       items.push(newItem);
@@ -90,7 +90,7 @@ export async function PUT(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[TESTIMONIALS API local cache update]", body.id);
       const items = cache.read();
       const idx = items.findIndex((i) => i.id === body.id);
@@ -125,7 +125,7 @@ export async function DELETE(req: NextRequest) {
 
     console.log("[TESTIMONIALS API DELETE ID]", id);
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       const items = cache.read();
       cache.write(items.filter((i) => i.id !== id));
       return apiResponse.success({ success: true });

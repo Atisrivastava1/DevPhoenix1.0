@@ -27,7 +27,7 @@ export const blogPosts: BlogPost[] = [
       role: "Engineering",
       avatar: "/logo/devphoenix-logo.png",
     },
-    image: "/courses/ai-automation.png",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
     content: `
       <h2>The Shift to Autonomous Workflows</h2>
       <p>Automation is no longer just about moving data from point A to point B. It's about intelligent decision-making. By combining the visual logic of n8n with the reasoning capabilities of OpenAI, we can build agents that not only act, but think.</p>
@@ -54,7 +54,7 @@ export const blogPosts: BlogPost[] = [
       role: "Product",
       avatar: "/logo/devphoenix-logo.png",
     },
-    image: "/courses/fullstack.png",
+    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
     content: `
       <h2>Why We Get Stuck in Tutorial Hell</h2>
       <p>Tutorials give us a false sense of progress. We follow along, the code works, and we feel like we've learned something. But the moment we face a blank editor, panic sets in.</p>

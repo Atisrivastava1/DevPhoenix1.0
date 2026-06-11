@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import PublicChrome from "@/components/layout/PublicChrome";
 import { PremiumToastContainer } from "@/components/ui/PremiumToast";
+import { SpeculationRules } from "@/components/ui/SpeculationRules";
 import "./globals.css";
 
-const geistSans = { variable: "font-sans" };
-const geistMono = { variable: "font-mono" };
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://devphoenix.tech'),
@@ -45,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body
@@ -56,6 +67,7 @@ export default function RootLayout({
         <PublicChrome />
         {children}
         <PremiumToastContainer />
+        <SpeculationRules />
       </body>
     </html>
   );

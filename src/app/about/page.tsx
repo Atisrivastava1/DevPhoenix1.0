@@ -7,9 +7,32 @@ import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/sections/Footer";
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
 import { designSystem } from "@/lib/design-system";
-import { contactInfo, socialLinks } from "@/data/community";
+import { designSystem } from "@/lib/design-system";
+import { useEffect, useState } from "react";
 
 export default function AboutPage() {
+  const [config, setConfig] = useState<any>({ contact: {}, socials: {} });
+
+  useEffect(() => {
+    fetch('/api/site-config', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => {
+        const payload = d && d.success && d.data ? d.data : (d || {});
+        setConfig({
+          contact: payload.contact || {},
+          socials: payload.socials || {}
+        });
+      })
+      .catch(() => {});
+  }, []);
+
+  const socialLinks = Object.entries(config.socials || {})
+    .filter(([_, url]) => !!url)
+    .map(([network, url]) => ({
+      label: network.charAt(0).toUpperCase() + network.slice(1),
+      href: url as string
+    }));
+
   return (
     <>
       <Navbar />
@@ -108,13 +131,13 @@ export default function AboutPage() {
                   <div className="space-y-6">
                     <div>
                       <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Email Us</p>
-                      <a href={`mailto:${contactInfo.email}`} className="text-lg font-bold text-slate-900 hover:text-orange-500 transition-colors">
-                        {contactInfo.email}
+                      <a href={`mailto:${config.contact?.email || 'hello@devphoenix.tech'}`} className="text-lg font-bold text-slate-900 hover:text-orange-500 transition-colors">
+                        {config.contact?.email || 'hello@devphoenix.tech'}
                       </a>
                     </div>
                     <div>
                       <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Call Us</p>
-                      <p className="text-lg font-bold text-slate-900">{contactInfo.phone}</p>
+                      <p className="text-lg font-bold text-slate-900">{config.contact?.phone || '+91 00000 00000'}</p>
                     </div>
                   </div>
                 </div>

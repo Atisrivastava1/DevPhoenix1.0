@@ -328,8 +328,8 @@ export default function AdminLeads() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight mb-1">Lead CRM</h1>
-          <p className="text-sm text-slate-400 font-medium">{leads.length} total leads &bull; {conversionRate}% conversion rate</p>
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">Lead CRM</h1>
+          <p className="text-sm text-slate-500 font-medium">{leads.length} total leads &bull; {conversionRate}% conversion rate</p>
         </div>
         <Button onClick={exportCSV} variant="outline" size="sm" icon={<Download className="w-4 h-4" />}>
           Export CSV
@@ -344,14 +344,14 @@ export default function AdminLeads() {
             <button
               key={s}
               onClick={() => setStatusFilter(statusFilter === s ? 'All' : s)}
-              className={`p-5 rounded-2xl border text-left transition-all duration-300 ${
+              className={`p-5 rounded-2xl border text-left transition-all duration-300 shadow-sm ${
                 statusFilter === s
-                  ? 'bg-white text-slate-900 border-white shadow-xl scale-[1.03]'
-                  : 'bg-[#151821] border-slate-800/80 hover:border-slate-700/80'
+                  ? 'bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/10 scale-[1.03]'
+                  : 'bg-white border-slate-100 hover:border-orange-200 text-slate-900'
               }`}
             >
-              <p className={`text-3xl font-extrabold mb-1.5 ${statusFilter === s ? 'text-slate-900' : 'text-white'}`}>{counts[s] || 0}</p>
-              <Badge variant={badgeVar}>{s}</Badge>
+              <p className={`text-3xl font-extrabold mb-1.5 ${statusFilter === s ? 'text-white' : 'text-slate-900'}`}>{counts[s] || 0}</p>
+              <Badge variant={statusFilter === s ? 'default' : badgeVar}>{s}</Badge>
             </button>
           );
         })}
@@ -360,18 +360,18 @@ export default function AdminLeads() {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
             placeholder="Search by name, email, phone, program..."
-            className="w-full h-11 bg-[#151821] border border-slate-800 text-white rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all"
+            className="w-full h-11 bg-white border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
           />
         </div>
         <select
           value={statusFilter}
           onChange={e => { setStatusFilter(e.target.value as any); setPage(1); }}
-          className="bg-[#151821] border border-slate-800 text-slate-300 rounded-xl px-4 h-11 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+          className="bg-white border border-slate-200 text-slate-700 rounded-xl px-4 h-11 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
         >
           <option value="All">All Statuses</option>
           {ALL_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
@@ -379,7 +379,7 @@ export default function AdminLeads() {
         <select
           value={sortBy}
           onChange={e => setSortBy(e.target.value as any)}
-          className="bg-[#151821] border border-slate-800 text-slate-300 rounded-xl px-4 h-11 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+          className="bg-white border border-slate-200 text-slate-700 rounded-xl px-4 h-11 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
         >
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
@@ -388,9 +388,9 @@ export default function AdminLeads() {
       </div>
 
       {/* Table */}
-      <div className="bg-[#151821] border border-slate-800/80 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
-          <div className="p-16 text-center text-slate-500 font-bold animate-pulse">Loading leads...</div>
+          <div className="p-16 text-center text-slate-400 font-semibold animate-pulse">Loading leads...</div>
         ) : paginated.length === 0 ? (
           <PremiumEmptyState
             title="No CRM Leads Found"
@@ -400,22 +400,22 @@ export default function AdminLeads() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[700px]">
-              <thead className="border-b border-slate-800 bg-[#0d0f14]/50">
+              <thead className="border-b border-slate-100 bg-slate-50/50">
                 <tr>
                   {['Lead', 'Program', 'Status', 'Source', 'Date', ''].map(h => (
                     <th key={h} className="text-left px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-slate-100">
                 {paginated.map(lead => (
                   <tr
                     key={lead.id}
-                    className="hover:bg-white/5 transition-colors cursor-pointer"
+                    className="hover:bg-slate-50/40 transition-colors cursor-pointer"
                     onClick={() => setSelectedLead(lead)}
                   >
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-white">{lead.name}</p>
+                      <p className="font-bold text-slate-800">{lead.name}</p>
                       <p className="text-slate-400 text-xs mt-0.5">{lead.email}</p>
                       <p className="text-slate-500 text-xs mt-0.5">{lead.phone}</p>
                     </td>
@@ -425,7 +425,7 @@ export default function AdminLeads() {
                     <td className="px-6 py-4">
                       <StatusBadge status={lead.status || 'New'} />
                     </td>
-                    <td className="px-6 py-4 text-slate-400 text-xs font-semibold">{lead.source_page || 'Direct'}</td>
+                    <td className="px-6 py-4 text-slate-500 text-xs font-bold">{lead.source_page || 'Direct'}</td>
                     <td className="px-6 py-4 text-slate-400 text-xs whitespace-nowrap">
                       {new Date(lead.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })}
                     </td>
@@ -433,14 +433,14 @@ export default function AdminLeads() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setSelectedLead(lead)}
-                          className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                          className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
                           title="Open details"
                         >
                           <ChevronRight className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(lead.id)}
-                          className="p-2 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-colors"
+                          className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                           title="Delete"
                         >
                           <X className="w-4 h-4" />
@@ -458,10 +458,10 @@ export default function AdminLeads() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-6">
-          <p className="text-sm text-slate-400 font-medium">Showing {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}</p>
+          <p className="text-sm text-slate-500 font-semibold">Showing {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}</p>
           <div className="flex gap-2">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm disabled:opacity-40 transition-colors">← Prev</button>
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm disabled:opacity-40 transition-colors">Next →</button>
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold disabled:opacity-40 transition-colors">← Prev</button>
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold disabled:opacity-40 transition-colors">Next →</button>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { blogPosts } from "@/data/blog";
-import { blogsService } from "@/services/supabase/db.service";
-import { hasSupabaseConfig } from "@/services/supabase/client";
+import { blogsService } from "@/services/mongodb/db.service";
+import { hasMongoConfig } from "@/services/mongodb/client";
 import { apiResponse, getLocalCacheHelper } from "@/lib/api-utils";
 import { Blog } from "@/types";
 import { sanitizePayload, ValidationError } from "@/lib/api/sanitize-payload";
@@ -27,7 +27,7 @@ const INITIAL_SEED: Blog[] = blogPosts.map((post, idx) => ({
 const cache = getLocalCacheHelper<Blog>("blog-dynamic.json", undefined, INITIAL_SEED);
 
 export async function GET() {
-  if (!hasSupabaseConfig) {
+  if (!hasMongoConfig) {
     return apiResponse.success(cache.read());
   }
   try {
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[BLOGS API local cache save]", newPost.id);
       const list = cache.read();
       list.unshift(newPost);
@@ -108,7 +108,7 @@ export async function PUT(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[BLOGS API local cache update]", body.id);
       const list = cache.read();
       const idx = list.findIndex((p) => p.id === body.id);
@@ -141,7 +141,7 @@ export async function DELETE(req: NextRequest) {
       return apiResponse.badRequest("Article ID is required", "MISSING_REQUIRED_FIELD");
     }
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       const list = cache.read();
       cache.write(list.filter((p) => p.id !== id));
       return apiResponse.success({ success: true });

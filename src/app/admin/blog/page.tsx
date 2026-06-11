@@ -13,6 +13,7 @@ import { designSystem } from "@/lib/design-system";
 import ImagePicker from '@/components/admin/ImagePicker';
 import { showToast } from '@/components/ui/PremiumToast';
 import { ConfirmDeleteModal } from '@/components/admin/ConfirmDeleteModal';
+import { DynamicImage } from '@/components/ui/DynamicImage';
 
 
 const EMPTY = { id: '', slug: '', title: '', excerpt: '', category: 'AI & Automation', read_time: '5 min read', published_at: '', cover_image: '', content: '', is_published: true, author: { name: 'DevPhoeniX Team', role: 'Engineering', avatar: '/logo/devphoenix-logo.png' } };
@@ -38,7 +39,15 @@ export default function AdminBlog() {
 
   const openNew = () => { setForm({ ...EMPTY, published_at: new Date().toISOString() }); setEditing(null); setModalOpen(true); };
   const openEdit = (p: any) => { setForm(p); setEditing(p); setModalOpen(true); };
-  const f = (field: string) => (e: any) => setForm((prev: any) => ({ ...prev, [field]: e.target.value }));
+  const f = (field: string) => (e: any) => {
+    const val = e.target.value;
+    if (field === 'title' && !editing) {
+      const slug = String(val).toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
+      setForm((prev: any) => ({ ...prev, title: val, slug }));
+    } else {
+      setForm((prev: any) => ({ ...prev, [field]: val }));
+    }
+  };
 
   const handleSave = async () => {
     if (!form.title?.trim()) {
@@ -123,11 +132,9 @@ export default function AdminBlog() {
               transition={{ duration: 0.2 }}
             >
               <Card variant="glass" padding="sm" className="flex items-center gap-4 group border border-slate-100/50">
-                {post.cover_image && (
-                  <div className="relative w-20 h-16 rounded-xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
-                    <img src={post.cover_image} alt={post.title} className="w-full h-full object-cover" />
-                  </div>
-                )}
+                <div className="relative w-20 h-16 rounded-xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
+                  <DynamicImage src={post.cover_image} alt={post.title} category={post.category} fill className="object-cover" />
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
                     <Badge variant="orange">{post.category}</Badge>
@@ -175,8 +182,8 @@ export default function AdminBlog() {
           <Field label="Read Time"><Input value={form.read_time} onChange={f('read_time')} placeholder="8 min read" /></Field>
         </div>
         <ImagePicker value={form.cover_image} onChange={url => setForm((p: any) => ({ ...p, cover_image: url }))} label="Cover Image" />
-        <Field label="Content (HTML)" required>
-          <Textarea value={form.content} onChange={f('content')} rows={10} placeholder="<h2>Introduction</h2><p>Your article content here...</p>" className="font-mono text-xs" />
+        <Field label="Content" required>
+          <Textarea value={form.content} onChange={f('content')} rows={10} placeholder="Write your article content here... You can use standard text." className="font-mono text-xs" />
         </Field>
       </FormModal>
 

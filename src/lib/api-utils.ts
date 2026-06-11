@@ -5,37 +5,69 @@ import { join } from "path";
 // Standard HTTP Response structures
 export const apiResponse = {
   success: (data: any, status = 200) => {
-    return NextResponse.json({ success: true, data }, { status });
+    return NextResponse.json(
+      { success: true, data },
+      {
+        status,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate'
+        }
+      }
+    );
   },
   error: (message: string, code = "INTERNAL_SERVER_ERROR", details: any = null, status = 500) => {
-    return NextResponse.json({
-      success: false,
-      error: {
-        message,
-        code,
-        details: details ? (typeof details === "string" ? details : JSON.stringify(details)) : ""
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          message,
+          code,
+          details: details ? (typeof details === "string" ? details : JSON.stringify(details)) : ""
+        }
+      },
+      {
+        status,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate'
+        }
       }
-    }, { status });
+    );
   },
   notFound: (message = "Resource not found", code = "NOT_FOUND") => {
-    return NextResponse.json({
-      success: false,
-      error: {
-        message,
-        code,
-        details: ""
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          message,
+          code,
+          details: ""
+        }
+      },
+      {
+        status: 404,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate'
+        }
       }
-    }, { status: 404 });
+    );
   },
   badRequest: (message = "Invalid payload parameters", code = "BAD_REQUEST", details: any = null) => {
-    return NextResponse.json({
-      success: false,
-      error: {
-        message,
-        code,
-        details: details ? (typeof details === "string" ? details : JSON.stringify(details)) : ""
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          message,
+          code,
+          details: details ? (typeof details === "string" ? details : JSON.stringify(details)) : ""
+        }
+      },
+      {
+        status: 400,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate'
+        }
       }
-    }, { status: 400 });
+    );
   },
 };
 

@@ -44,19 +44,44 @@ export function WhyDevPhoenix() {
   const [visualBlocks, setVisualBlocks] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/visual-blocks', { cache: 'no-store' })
+    if (typeof window !== 'undefined') {
+      const cached = sessionStorage.getItem('/api/visual-blocks');
+      if (cached) {
+        try {
+          const { val, expiry } = JSON.parse(cached);
+          if (expiry > Date.now() && Array.isArray(val)) {
+            setVisualBlocks(val.filter((b: any) => b.section_key === 'mentorship' && b.visibility));
+          }
+        } catch {}
+      }
+    }
 
+    fetch('/api/visual-blocks', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
-        if (Array.isArray(d)) {
-          setVisualBlocks(d.filter(b => b.section_key === 'mentorship' && b.visibility));
+        const list = d && d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+        setVisualBlocks(list.filter((b: any) => b.section_key === 'mentorship' && b.visibility));
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('/api/visual-blocks', JSON.stringify({
+            val: list,
+            expiry: Date.now() + 60000 // Cache for 1 minute
+          }));
         }
       })
       .catch(() => {});
   }, []);
 
   const mascotBlock = visualBlocks.find(b => b.id === 'pillar-mascot');
-  const pillarBlocks = visualBlocks.filter(b => b.id !== 'pillar-mascot').sort((a, b) => a.position - b.position);
+  const uniquePillarBlocks = Array.from(
+    new Map(
+      visualBlocks
+        .filter(b => b.id !== 'pillar-mascot')
+        .sort((a, b) => a.position - b.position)
+        .map(b => [b.id, b])
+    ).values()
+  );
+
+  const pillarBlocks = uniquePillarBlocks;
 
   // Map badge string to Lucide Icon
   const getIcon = (name: string) => {
@@ -81,7 +106,7 @@ export function WhyDevPhoenix() {
   const mascotImage = mascotBlock?.image_url || "/learning.png";
 
   return (
-    <SectionWrapper background="white">
+    <SectionWrapper background="white" className="!pb-2 lg:!pb-6">
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden rounded-[4rem]">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-orange-400/10 rounded-full blur-[100px]" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-amber-300/10 rounded-full blur-[100px]" />

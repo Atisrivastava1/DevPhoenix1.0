@@ -129,6 +129,8 @@ export function DynamicImage({
       src={src}
       alt={alt}
       className={className}
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "low"}
       onError={() => setError(true)}
     />
   );

@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, Star } from 'lucide-react';
 import FormModal, { Field, Input, Textarea } from '@/components/admin/FormModal';
 import ImagePicker from '@/components/admin/ImagePicker';
-import { testimonials as staticTestimonials } from '@/data/testimonials';
 
 export default function AdminTestimonials() {
   const [items, setItems] = useState<any[]>([]);
@@ -19,14 +18,9 @@ export default function AdminTestimonials() {
       const dynamic = await res.json();
       const raw = dynamic.success && Array.isArray(dynamic.data) ? dynamic.data : (Array.isArray(dynamic) ? dynamic : []);
       
-      // Merge static + dynamic
-      const all = [
-        ...staticTestimonials.map(t => ({ ...t, source: 'static' })),
-        ...raw.map((t: any) => ({ ...t, source: 'dynamic' }))
-      ];
-      setItems(all);
+      setItems(raw.map((t: any) => ({ ...t, source: 'dynamic' })));
     } catch {
-      setItems(staticTestimonials.map(t => ({ ...t, source: 'static' })));
+      setItems([]);
     }
   };
   useEffect(() => { load(); }, []);
@@ -42,7 +36,6 @@ export default function AdminTestimonials() {
   };
 
   const handleDelete = async (id: string, source: string) => {
-    if (source === 'static') { alert('Static testimonials are in code. Edit src/data/testimonials.ts directly.'); return; }
     if (!confirm('Delete this testimonial?')) return;
     await fetch('/api/testimonials', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
     load();

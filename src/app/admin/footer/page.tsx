@@ -23,17 +23,16 @@ export default function AdminFooterPage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/site-config')
+    fetch('/api/site-config', { cache: 'no-store' })
       .then(r => r.json())
-      .then(data => {
-        if (data) {
-          setConfig({
-            contact: data.contact || { email: '', phone: '', address: '' },
-            socials: { ...FALLBACK_SOCIALS, ...(data.socials || {}) },
-            footer: data.footer || { tagline: '', copyright: '' },
-            footerColumns: data.footerColumns || []
-          });
-        }
+      .then(d => {
+        const payload = d && d.success && d.data ? d.data : (d || {});
+        setConfig({
+          contact: payload.contact || { email: '', phone: '', address: '' },
+          socials: { ...FALLBACK_SOCIALS, ...(payload.socials || {}) },
+          footer: payload.footer || { tagline: '', copyright: '' },
+          footerColumns: payload.footerColumns || []
+        });
         setLoading(false);
       })
       .catch(() => setLoading(false));

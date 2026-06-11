@@ -4,12 +4,13 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Target, BookOpen, Code2, Users, Briefcase, Bot, Settings, Zap, Layers, PieChart, Cloud, PlayCircle, Rocket } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { learningPathsData } from "@/data/learningPaths";
+
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/sections/Footer";
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
 import { designSystem } from "@/lib/design-system";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 
 // Map static lucide icons for custom build indicators
@@ -28,19 +29,19 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 
 export default function LearningPathsPage() {
   const [paths, setPaths] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/learning-paths', { cache: 'no-store' })
       .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setPaths(data);
-        } else {
-          setPaths(learningPathsData);
-        }
+      .then(d => {
+        const list = d && d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+        setPaths(list);
+        setLoading(false);
       })
       .catch(() => {
-        setPaths(learningPathsData);
+        setPaths([]);
+        setLoading(false);
       });
   }, []);
 
@@ -75,7 +76,40 @@ export default function LearningPathsPage() {
         {/* Detailed Learning Paths */}
         <SectionWrapper background="white" className="py-24">
           <div className="flex flex-col gap-16">
-            {paths.length === 0 ? (
+            {loading ? (
+              [1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-[3rem] p-8 lg:p-12 border border-slate-100 shadow-[0_10px_40px_rgb(0,0,0,0.03)] flex flex-col lg:flex-row gap-12 animate-pulse w-full"
+                >
+                  <div className="lg:w-1/3 flex flex-col gap-4">
+                    <Skeleton className="h-6 w-20 rounded-lg bg-slate-200" />
+                    <Skeleton className="h-10 w-3/4 rounded-xl bg-slate-200" />
+                    <Skeleton className="h-4 w-full bg-slate-200" />
+                    <Skeleton className="h-4 w-5/6 mb-4 bg-slate-200" />
+                    <div className="relative w-full aspect-[4/3] rounded-2xl border border-orange-100 overflow-hidden bg-slate-100/50" />
+                  </div>
+                  <div className="lg:w-2/3 flex flex-col gap-8 lg:border-l border-slate-100 lg:pl-12 justify-center">
+                    <div>
+                      <Skeleton className="h-4 w-48 mb-4 bg-slate-200" />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {Array.from({ length: 4 }).map((_, idx) => (
+                          <Skeleton key={idx} className="h-12 w-full rounded-xl bg-slate-200" />
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <Skeleton className="h-4 w-48 mb-4 bg-slate-200" />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {Array.from({ length: 4 }).map((_, idx) => (
+                          <Skeleton key={idx} className="h-16 w-full rounded-xl bg-slate-200" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : paths.length === 0 ? (
               <PremiumEmptyState
                 title="No Learning Paths Available"
                 description="We are currently laying out custom skill maps and paths. Join the builder community to suggest a curriculum!"

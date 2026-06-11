@@ -47,6 +47,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
             <img
               src={avatar}
               alt={name}
+              loading="lazy"
               className="h-full w-full rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>

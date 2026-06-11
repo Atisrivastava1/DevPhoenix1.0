@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Rocket, ExternalLink, Code2 } from "lucide-react";
-import { showcaseProjectsData as staticShowcaseData } from "@/data/showcase";
+
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/sections/Footer";
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
@@ -11,17 +11,18 @@ import { designSystem } from "@/lib/design-system";
 import { DynamicImage } from "@/components/ui/DynamicImage";
 
 export default function ShowcasePage() {
-  const [projects, setProjects] = useState<any[]>(staticShowcaseData);
+  const [projects, setProjects] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/showcase')
+    fetch('/api/showcase', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
-        if (Array.isArray(d) && d.length > 0) {
-          setProjects(d);
+        const list = d && d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+        if (list.length > 0) {
+          setProjects(list);
         }
       })
-      .catch(() => {});
+      .catch(() => setProjects([]));
   }, []);
 
   return (
@@ -138,6 +139,13 @@ export default function ShowcasePage() {
                 </div>
               </motion.div>
             ))}
+            
+            {projects.length === 0 && (
+              <div className="col-span-full py-20 text-center text-slate-500 bg-slate-50 rounded-[2rem] border border-slate-100">
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Projects coming soon</h3>
+                <p>We are currently gathering the latest projects from our learners.</p>
+              </div>
+            )}
           </div>
         </SectionWrapper>
       </div>

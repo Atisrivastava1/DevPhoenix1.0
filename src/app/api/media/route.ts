@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { readFileSync, readdirSync, statSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 import { join } from 'path';
-import { storageService } from '@/services/supabase/storage.service';
-import { hasSupabaseConfig } from '@/services/supabase/client';
+import { cloudinaryService, hasCloudinaryConfig } from '@/services/cloudinary/storage.service';
 
 export const dynamic = 'force-dynamic';
 
@@ -121,8 +120,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    if (hasSupabaseConfig) {
-      const publicUrl = await storageService.uploadFile(file, 'media', folder);
+    // Upload to Cloudinary if configured
+    if (hasCloudinaryConfig) {
+      const publicUrl = await cloudinaryService.uploadFile(file, folder);
       return NextResponse.json({ url: publicUrl, name: file.name });
     }
 
@@ -157,8 +157,9 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 });
     }
 
-    if (hasSupabaseConfig && url.includes('/media/')) {
-      await storageService.deleteFile(url, 'media');
+    // Delete from Cloudinary if it's a Cloudinary URL
+    if (hasCloudinaryConfig && url.includes('res.cloudinary.com')) {
+      await cloudinaryService.deleteFile(url);
       return NextResponse.json({ success: true });
     }
 
@@ -178,4 +179,3 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: err.message || 'Failed to delete media' }, { status: 500 });
   }
 }
-

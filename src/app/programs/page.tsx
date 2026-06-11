@@ -5,7 +5,7 @@ import { Clock, Briefcase, CheckCircle2, ChevronRight, Award, Zap } from "lucide
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { programsData } from "@/data/programs";
+
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/sections/Footer";
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
@@ -13,18 +13,19 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { designSystem } from "@/lib/design-system";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
+import { CardSkeleton } from "@/components/ui/Skeleton";
 
 
 export default function ProgramsPage() {
   const [programs, setPrograms] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/programs', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         const raw = data.success && Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
-        const list = raw.length > 0 ? raw : programsData;
-        setPrograms(list.map((p: any) => ({
+        setPrograms(raw.map((p: any) => ({
           ...p,
           practical_hours: p.practical_hours || p.practicalHours || "100+ Hours",
           pricing_details: p.pricing_details || p.pricingDetails || {
@@ -32,16 +33,11 @@ export default function ProgramsPage() {
             originalPrice: p.originalPrice || ""
           }
         })));
+        setLoading(false);
       })
       .catch(() => {
-        setPrograms(programsData.map((p: any) => ({
-          ...p,
-          practical_hours: p.practical_hours || p.practicalHours || "100+ Hours",
-          pricing_details: p.pricing_details || p.pricingDetails || {
-            discountedPrice: p.discountedPrice || p.price,
-            originalPrice: p.originalPrice || ""
-          }
-        })));
+        setPrograms([]);
+        setLoading(false);
       });
   }, []);
 
@@ -130,7 +126,13 @@ export default function ProgramsPage() {
               </p>
             </div>
  
-            {premiumPrograms.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8">
+                {[1, 2].map((i) => (
+                  <CardSkeleton key={i} />
+                ))}
+              </div>
+            ) : premiumPrograms.length === 0 ? (
               <PremiumEmptyState
                 title="No Premium Programs Available"
                 description="Our educational engineers are currently compiling new premium career pathways. Check back soon!"
@@ -246,7 +248,13 @@ export default function ProgramsPage() {
               </p>
             </div>
  
-            {industrialPrograms.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8">
+                {[1, 2].map((i) => (
+                  <CardSkeleton key={i} />
+                ))}
+              </div>
+            ) : industrialPrograms.length === 0 ? (
               <PremiumEmptyState
                 title="No Industrial Programs Available"
                 description="Accelerated training batches are currently being scheduled with our corporate partners. Check back soon!"

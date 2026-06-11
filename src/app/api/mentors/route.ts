@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { mentorsService } from '@/services/supabase/db.service';
-import { hasSupabaseConfig } from '@/services/supabase/client';
+import { mentorsService } from '@/services/mongodb/db.service';
+import { hasMongoConfig } from '@/services/mongodb/client';
 import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
 import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
 import { Mentor } from '@/types';
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 const cache = getLocalCacheHelper<Mentor>('mentors.json');
 
 export async function GET() {
-  if (hasSupabaseConfig) {
+  if (hasMongoConfig) {
     try {
       const items = await mentorsService.getAll();
       return apiResponse.success(items);
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       created_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[MENTORS API local cache save]", newMentor.id);
       const items = cache.read();
       items.push(newMentor);
@@ -90,7 +90,7 @@ export async function PUT(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       console.log("[MENTORS API local cache update]", body.id);
       const items = cache.read();
       const i = items.findIndex((x) => x.id === body.id);
@@ -125,7 +125,7 @@ export async function DELETE(req: NextRequest) {
 
     console.log("[MENTORS API DELETE ID]", id);
 
-    if (!hasSupabaseConfig) {
+    if (!hasMongoConfig) {
       const items = cache.read();
       cache.write(items.filter((x) => x.id !== id));
       return apiResponse.success({ success: true });

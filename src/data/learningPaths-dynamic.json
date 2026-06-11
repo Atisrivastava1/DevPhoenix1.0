@@ -1,0 +1,118 @@
+[
+  {
+    "id": "01",
+    "title": "AI Foundations",
+    "description": "Learn AI tools, prompting, workflows, and productivity systems to amplify learning and execution.",
+    "included": [
+      "AI Automation",
+      "AI Productivity Systems",
+      "Prompt Engineering"
+    ],
+    "build": [
+      {
+        "text": "AI Research Assistant",
+        "icon": ""
+      },
+      {
+        "text": "Smart Workflow System",
+        "icon": ""
+      }
+    ],
+    "tags": [
+      "AI Tools",
+      "Prompting",
+      "Productivity"
+    ],
+    "image": "/learning-paths/ai-foundations.png"
+  },
+  {
+    "id": "02",
+    "title": "Automation Systems",
+    "description": "Design automated workflows and AI-powered integrations to save time and scale operations.",
+    "included": [
+      "AI Automation",
+      "Workflow Automation",
+      "Automation Pipelines"
+    ],
+    "build": [
+      {
+        "text": "Automation Dashboard",
+        "icon": ""
+      },
+      {
+        "text": "End-to-End Workflow System",
+        "icon": ""
+      }
+    ],
+    "tags": [
+      "No-Code",
+      "Workflows",
+      "Integrations"
+    ],
+    "image": "/learning-paths/automation-systems.png"
+  },
+  {
+    "id": "03",
+    "title": "Build AI Projects",
+    "description": "Build real-world AI applications, full stack systems, dashboards, cloud deployments, and portfolio-ready products.",
+    "included": [
+      "Full Stack Development",
+      "MERN Stack Development",
+      "DSA (Industry Ready)",
+      "Cloud Computing (AWS)"
+    ],
+    "build": [
+      {
+        "text": "AI Web App",
+        "icon": ""
+      },
+      {
+        "text": "Data-Powered Dashboard",
+        "icon": ""
+      },
+      {
+        "text": "Cloud Deployment Pipeline",
+        "icon": ""
+      }
+    ],
+    "tags": [
+      "MERN",
+      "DSA",
+      "AWS",
+      "AI Apps",
+      "Portfolio"
+    ],
+    "image": "/learning-paths/build-ai-projects.png"
+  },
+  {
+    "id": "04",
+    "title": "Creator & Startup OS",
+    "description": "Build systems for content, audience growth, business execution, and digital entrepreneurship.",
+    "included": [
+      "Digital Marketing",
+      "Entrepreneurship",
+      "Creator Growth Systems"
+    ],
+    "build": [
+      {
+        "text": "Content Engine",
+        "icon": ""
+      },
+      {
+        "text": "Startup MVP System",
+        "icon": ""
+      },
+      {
+        "text": "Audience Growth Pipeline",
+        "icon": ""
+      }
+    ],
+    "tags": [
+      "Digital Marketing",
+      "Entrepreneurship",
+      "Growth",
+      "Creator Tools"
+    ],
+    "image": "/learning-paths/startup-os.png"
+  }
+]

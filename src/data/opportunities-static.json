@@ -1,0 +1,7 @@
+[
+  { "id": "1", "title": "Corporate React Training", "client": "Tech Mahindra", "value": "₹4,50,000", "stage": "Negotiation", "closeDate": "15 Jun 2026", "probability": "80%" },
+  { "id": "2", "title": "Cloud & DevOps Masterclass", "client": "Wipro Technologies", "value": "₹12,00,000", "stage": "Won", "closeDate": "28 May 2026", "probability": "100%" },
+  { "id": "3", "title": "AI Automation Workshop", "client": "TCS Group", "value": "₹6,80,000", "stage": "Proposal", "closeDate": "30 Jun 2026", "probability": "60%" },
+  { "id": "4", "title": "Growth Marketing Bootcamps", "client": "Infosys Ltd", "value": "₹3,20,000", "stage": "Discovery", "closeDate": "12 Jul 2026", "probability": "30%" },
+  { "id": "5", "title": "CS Foundations Courseware", "client": "LTI Mindtree", "value": "₹5,00,000", "stage": "Proposal", "closeDate": "22 Jun 2026", "probability": "50%" }
+]

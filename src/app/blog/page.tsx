@@ -8,24 +8,25 @@ import { Clock, ArrowRight, BookOpen } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/sections/Footer";
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
-import { blogPosts as staticBlogPosts } from "@/data/blog";
+
 import { designSystem } from "@/lib/design-system";
 import { SchemaCard } from "@/components/ui/SchemaCard";
 import { BlogCard } from "@/components/cards/BlogCard";
 import { PremiumEmptyState } from "@/components/ui/PremiumEmptyState";
 
 export default function BlogPage() {
-  const [posts, setPosts] = useState<any[]>(staticBlogPosts);
+  const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
     fetch('/api/blog', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
-        if (Array.isArray(d) && d.length > 0) {
-          setPosts(d);
+        const list = d && d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+        if (list.length > 0) {
+          setPosts(list);
         }
       })
-      .catch(() => {});
+      .catch(() => setPosts([]));
   }, []);
 
   return (

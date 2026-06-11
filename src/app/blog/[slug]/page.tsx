@@ -6,20 +6,17 @@ import { Clock, ChevronLeft, Share2 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/sections/Footer";
 import { SectionWrapper } from "@/components/sections/SectionWrapper";
-import { blogPosts as staticBlogPosts } from "@/data/blog";
+import { blogsService } from "@/services/mongodb/db.service";
+import { hasMongoConfig } from "@/services/mongodb/client";
 import { blogPostingJsonLd, breadcrumbJsonLd, organizationJsonLd } from "@/lib/seo";
 import { DynamicImage } from "@/components/ui/DynamicImage";
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
 
-// ─── Dynamic JSON Helper ──────────────────────────────────────────────────────
-function getBlogPosts() {
-  const FILE_PATH = join(process.cwd(), 'src/data/blog-dynamic.json');
-  let rawList = staticBlogPosts;
-  if (existsSync(FILE_PATH)) {
+// ─── Dynamic Helper ──────────────────────────────────────────────────────────
+async function getBlogPosts() {
+  let rawList = [];
+  if (hasMongoConfig) {
     try {
-      const data = JSON.parse(readFileSync(FILE_PATH, 'utf-8'));
-      if (Array.isArray(data) && data.length > 0) rawList = data;
+      rawList = await blogsService.getAll();
     } catch {}
   }
   return rawList.map((post: any) => ({
@@ -34,7 +31,7 @@ function getBlogPosts() {
 // ─── Dynamic Metadata ──────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const posts = getBlogPosts();
+  const posts = await getBlogPosts();
   const post = posts.find(p => p.slug === slug);
   if (!post) return { title: 'Blog Post Not Found' };
   return {
@@ -56,7 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const posts = getBlogPosts();
+  const posts = await getBlogPosts();
   const post = posts.find(p => p.slug === slug);
   if (!post) notFound();
 
@@ -126,7 +123,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
         {/* Article Body */}
         <SectionWrapper background="white">
-          <div className="max-w-3xl mx-auto prose prose-lg prose-slate prose-headings:font-extrabold prose-h2:text-3xl prose-h2:text-slate-900 prose-h3:text-2xl prose-p:text-slate-600 prose-p:leading-relaxed prose-a:text-orange-500" dangerouslySetInnerHTML={{ __html: post.content }} />
+          <div className="max-w-3xl mx-auto prose prose-lg prose-slate prose-headings:font-extrabold prose-h2:text-3xl prose-h2:text-slate-900 prose-h3:text-2xl prose-p:text-slate-600 prose-p:leading-relaxed prose-a:text-orange-500 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: post.content }} />
         </SectionWrapper>
 
         {/* Related Posts */}

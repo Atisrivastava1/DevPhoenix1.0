@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { siteConfigService } from '@/services/supabase/db.service';
-import { hasSupabaseConfig } from '@/services/supabase/client';
+import { siteConfigService } from '@/services/mongodb/db.service';
+import { hasMongoConfig } from '@/services/mongodb/client';
 import { apiResponse, getLocalCacheHelper } from '@/lib/api-utils';
 import { sanitizePayload, ValidationError } from '@/lib/api/sanitize-payload';
 
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 const cache = getLocalCacheHelper<any>('site-config.json', undefined, {} as any);
 
 export async function GET() {
-  if (hasSupabaseConfig) {
+  if (hasMongoConfig) {
     try {
       const config = await siteConfigService.get();
       if (config) return apiResponse.success(config);
@@ -36,7 +36,7 @@ export async function PUT(req: NextRequest) {
       throw valErr;
     }
 
-    if (hasSupabaseConfig) {
+    if (hasMongoConfig) {
       console.log("[SITE CONFIG API PUT PAYLOAD]", JSON.stringify(sanitized, null, 2));
       try {
         const updatedConfig = await siteConfigService.update(sanitized);

@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { navItems as staticNavItems } from '@/data/navigation';
 import { usePathname } from 'next/navigation';
 
 const AnimatedNavLink = ({ href, children, isActive }: { href: string; children: React.ReactNode; isActive: boolean }) => {
@@ -26,17 +25,48 @@ export default function Navbar() {
   const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
-  const [items, setItems] = useState(staticNavItems);
+  const [items, setItems] = useState<any[]>([]);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    fetch('/api/site-config')
+    // 1. Try reading from sessionStorage cache first
+    const cached = typeof window !== 'undefined' ? sessionStorage.getItem('/api/site-config') : null;
+    if (cached) {
+      try {
+        const { val, expiry } = JSON.parse(cached);
+        if (expiry > Date.now() && Array.isArray(val.navItems)) {
+          setItems(val.navItems);
+        }
+      } catch {}
+    }
+
+    fetch('/api/site-config', { cache: 'no-store' })
       .then(r => r.json())
-      .then(data => {
-        if (data && Array.isArray(data.navItems)) {
-          setItems(data.navItems);
+      .then(d => {
+        const payload = d && d.success && d.data ? d.data : (d || {});
+        if (Array.isArray(payload.navItems)) {
+          setItems(payload.navItems);
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('/api/site-config', JSON.stringify({
+              val: payload,
+              expiry: Date.now() + 60000 // Cache for 1 minute
+            }));
+          }
         }
       })
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleMenu = () => {
@@ -63,38 +93,41 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  const loginButtonElement = (
-    <Link href="/login" className="w-full sm:w-auto">
-      <button className="px-5 py-2 sm:px-4 text-xs sm:text-sm font-semibold border border-slate-200 bg-white/50 text-slate-700 rounded-full hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200 w-full sm:w-auto">
+  const renderLoginButton = (onClick?: () => void) => (
+    <Link href="/login" onClick={onClick} className="w-full sm:w-auto">
+      <button className="px-5 py-2 sm:px-4 text-xs sm:text-sm font-semibold border border-slate-200 bg-white/50 text-slate-700 rounded-full hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200 w-full sm:w-auto cursor-pointer">
         Login
       </button>
     </Link>
   );
 
-  const signupButtonElement = (
-    <Link href="/login" className="relative group w-full sm:w-auto block">
+  const renderSignupButton = (onClick?: () => void) => (
+    <Link href="/login" onClick={onClick} className="relative group w-full sm:w-auto block">
        <div className="absolute inset-0 -m-1 rounded-full
                      hidden sm:block
                      bg-orange-400
                      opacity-20 filter blur-md pointer-events-none
                      transition-all duration-300 ease-out
                      group-hover:opacity-40 group-hover:blur-lg group-hover:-m-2"></div>
-       <button className="relative z-10 px-5 py-2 sm:px-4 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-full shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto transform hover:-translate-y-0.5 block">
+       <button className="relative z-10 px-5 py-2 sm:px-4 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-full shadow-md hover:shadow-lg transition-all duration-200 w-full sm:w-auto transform hover:-translate-y-0.5 block cursor-pointer">
          Join Now
        </button>
     </Link>
   );
 
   return (
-    <header className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50
+    <header className={`fixed left-1/2 transform -translate-x-1/2 z-50
                        w-[calc(100%-2rem)] max-w-7xl
-                       transition-all duration-300 ease-in-out`}>
+                       transition-all duration-300 ease-in-out
+                       ${isScrolled ? 'top-3' : 'top-6'}`}>
 
       {/* Main Navbar Container */}
       <div className={`flex flex-col items-center
-                      px-6 py-3 backdrop-blur-md
+                      px-6 transition-all duration-300 ease-in-out
+                      ${isScrolled ? 'py-2 bg-[#fdf8f3]/95 border-orange-950/10 shadow-[0_12px_40px_rgba(249,115,22,0.06)]' : 'py-3 bg-[#fdf8f3]/85 border-orange-900/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'}
+                      backdrop-blur-md
                       ${headerShapeClass}
-                      border border-orange-900/5 bg-[#fdf8f3]/85 shadow-[0_8px_30px_rgb(0,0,0,0.04)]
+                      border
                       w-full`}>
 
         <div className="flex items-center justify-between w-full">
@@ -125,8 +158,8 @@ export default function Navbar() {
 
           {/* RIGHT → Login + Join Now */}
           <div className="hidden lg:flex items-center gap-4 shrink-0">
-            {loginButtonElement}
-            {signupButtonElement}
+            {renderLoginButton()}
+            {renderSignupButton()}
           </div>
 
           {/* Mobile Hamburger */}
@@ -150,8 +183,8 @@ export default function Navbar() {
             ))}
           </nav>
           <div className="flex flex-col items-center space-y-3 w-full">
-            {loginButtonElement}
-            {signupButtonElement}
+            {renderLoginButton(() => setIsOpen(false))}
+            {renderSignupButton(() => setIsOpen(false))}
           </div>
         </div>
 

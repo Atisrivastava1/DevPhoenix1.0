@@ -135,6 +135,20 @@ export interface Lead {
   updated_at?: string;
 }
 
+export type OpportunityStage = 'Discovery' | 'Proposal' | 'Negotiation' | 'Won' | 'Lost';
+
+export interface Opportunity {
+  id: string;
+  title: string;
+  client: string;
+  value: string;
+  stage: OpportunityStage;
+  closeDate: string;
+  probability: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface HomepageSettings {
   id: string; // Singleton, e.g., 'global'
   hero: {

@@ -5,8 +5,7 @@ import { motion } from "framer-motion";
 import { designSystem } from "@/lib/design-system";
 import { SectionWrapper } from "./SectionWrapper";
 import { TestimonialCard } from "@/components/cards/TestimonialCard";
-// Fallback static data — only used if API is unreachable
-import { testimonials as staticTestimonials } from "@/data/testimonials";
+
 
 export const TestimonialsColumn = (props: {
   className?: string;
@@ -43,17 +42,19 @@ export const TestimonialsColumn = (props: {
 };
 
 export function Testimonials() {
-  const [testimonials, setTestimonials] = useState<any[]>(staticTestimonials);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/testimonials')
+    fetch('/api/testimonials', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
-        if (Array.isArray(d) && d.length > 0) setTestimonials(d);
-        // else keep static fallback
+        const list = d && d.success && Array.isArray(d.data) ? d.data : (Array.isArray(d) ? d : []);
+        setTestimonials(list);
       })
-      .catch(() => {}); // keep static fallback on error
+      .catch(() => setTestimonials([]));
   }, []);
+
+  if (testimonials.length === 0) return null;
 
   const column1 = testimonials.slice(0, Math.ceil(testimonials.length / 2));
   const column2 = testimonials.slice(Math.ceil(testimonials.length / 2));
