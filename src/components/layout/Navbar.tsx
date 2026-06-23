@@ -25,7 +25,15 @@ export default function Navbar() {
   const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
-  const [items, setItems] = useState<any[]>([]);
+  const defaultNavItems = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Programs", href: "/programs" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
+
+const [items, setItems] = useState(defaultNavItems);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
