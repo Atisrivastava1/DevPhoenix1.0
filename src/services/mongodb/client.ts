@@ -25,10 +25,16 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (hasMongoConfig) {
+  const mongoOptions = {
+    serverSelectionTimeoutMS: 3000, // fail fast — 3 seconds max
+    connectTimeoutMS: 3000,
+    socketTimeoutMS: 5000,
+  };
+
   if (process.env.NODE_ENV === 'development') {
     // In dev, reuse the client across hot reloads
     if (!globalWithMongo._mongoClientPromise) {
-      client = new MongoClient(uri);
+      client = new MongoClient(uri, mongoOptions);
       globalWithMongo._mongoClientPromise = client.connect();
       globalWithMongo._mongoClient = client;
       console.log('🍃 MongoDB client created (dev singleton)');
@@ -36,7 +42,7 @@ if (hasMongoConfig) {
     clientPromise = globalWithMongo._mongoClientPromise;
   } else {
     // In production, create a fresh client
-    client = new MongoClient(uri);
+    client = new MongoClient(uri, mongoOptions);
     clientPromise = client.connect();
     console.log('🍃 MongoDB client created (production)');
   }

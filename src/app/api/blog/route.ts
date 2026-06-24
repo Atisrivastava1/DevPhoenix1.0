@@ -32,11 +32,17 @@ export async function GET() {
   }
   try {
     const data = await blogsService.getAll();
-    return apiResponse.success(data);
+    if (Array.isArray(data) && data.length > 0) {
+      return apiResponse.success(data);
+    }
+    console.warn("⚠️ [GET /api/blog] MongoDB returned empty, falling back to local cache.");
+    return apiResponse.success(cache.read());
   } catch (error: any) {
-    return apiResponse.error(error.message, "DATABASE_FETCH_FAILED");
+    console.warn("⚠️ [GET /api/blog] MongoDB error, falling back to local cache:", error.message);
+    return apiResponse.success(cache.read());
   }
 }
+
 
 export async function POST(req: NextRequest) {
   try {

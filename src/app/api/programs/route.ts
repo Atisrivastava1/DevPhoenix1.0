@@ -15,9 +15,16 @@ export async function GET() {
   }
   try {
     const data = await programsService.getAll();
-    return apiResponse.success(data);
+    if (Array.isArray(data) && data.length > 0) {
+      return apiResponse.success(data);
+    }
+    // MongoDB returned empty — fall back to local cache
+    console.warn("⚠️ [GET /api/programs] MongoDB returned empty, falling back to local cache.");
+    return apiResponse.success(cache.read());
   } catch (error: any) {
-    return apiResponse.error(error.message, "DATABASE_FETCH_FAILED");
+    // MongoDB failed (timeout, network error, etc.) — fall back to local cache
+    console.warn("⚠️ [GET /api/programs] MongoDB error, falling back to local cache:", error.message);
+    return apiResponse.success(cache.read());
   }
 }
 
