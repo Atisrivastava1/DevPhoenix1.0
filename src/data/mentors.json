@@ -1,0 +1,32 @@
+[
+  {
+    "id": "mentor-1",
+    "name": "Vikram Mehta",
+    "role": "Senior SDE @ Amazon",
+    "status": "online",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop",
+    "tags": ["AWS", "System Design"],
+    "isVerified": true,
+    "followers": 1240
+  },
+  {
+    "id": "mentor-2",
+    "name": "Riya Sen",
+    "role": "Automation Lead @ StartX",
+    "status": "away",
+    "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1888&auto=format&fit=crop",
+    "tags": ["Premium", "AI Tools"],
+    "isVerified": true,
+    "followers": 890
+  },
+  {
+    "id": "mentor-3",
+    "name": "Arjun Desai",
+    "role": "Data Scientist @ Quantum",
+    "status": "online",
+    "avatar": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2070&auto=format&fit=crop",
+    "tags": ["Python", "Machine Learning"],
+    "isVerified": true,
+    "followers": 3200
+  }
+]

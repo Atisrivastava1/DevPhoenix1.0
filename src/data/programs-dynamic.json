@@ -1,0 +1,1388 @@
+[
+  {
+    "id": "ai-prompt-engineering",
+    "slug": "ai-prompt-engineering",
+    "title": "AI & Prompt Engineering",
+    "description": "Learn how modern AI systems work, master prompt engineering techniques, build AI-powered workflows, and automate repetitive tasks.",
+    "category": "AI & Automation",
+    "level": "Beginner to Intermediate",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "ChatGPT",
+      "Claude",
+      "Prompt Engineering",
+      "n8n",
+      "Zapier"
+    ],
+    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1932&auto=format&fit=crop",
+    "overview": "Learn how modern AI systems work, master prompt engineering techniques, build AI-powered workflows, automate repetitive tasks, and leverage Generative AI for business, development, marketing, research, and entrepreneurship.",
+    "outcomes": [
+      "Understand the mechanics of LLMs and Generative AI",
+      "Write high-converting professional prompts",
+      "Build multi-agent workflows and reflection loops",
+      "Automate repetitive tasks with n8n and Zapier",
+      "Deploy AI assistants and autonomous workflows"
+    ],
+    "projects": 5,
+    "curriculum": [
+      {
+        "week": "Module 1 (4 Hours)",
+        "title": "Foundations of Artificial Intelligence",
+        "topics": [
+          "Introduction to AI",
+          "What is Artificial Intelligence?",
+          "Evolution of AI",
+          "Narrow AI vs General AI",
+          "Machine Learning vs Deep Learning",
+          "Generative AI vs Traditional AI",
+          "Large Language Models (LLMs)",
+          "Multimodal AI",
+          "AI Agents",
+          "AI Assistants",
+          "AI Search Engines",
+          "Overview of models: GPT Family, Claude Family, Gemini Family, Llama Family, DeepSeek Models, Mistral Models",
+          "Practical: Compare outputs from multiple models on the same task."
+        ]
+      },
+      {
+        "week": "Module 2 (4 Hours)",
+        "title": "Understanding Large Language Models",
+        "topics": [
+          "How LLMs Work",
+          "Tokens & Context Windows",
+          "Training Data & Fine-Tuning",
+          "Retrieval-Augmented Generation (RAG)",
+          "Strengths & Limitations: Hallucinations, Bias, Context Loss, Knowledge Cutoffs",
+          "AI Safety & Responsible Usage: Ethical AI, Privacy Concerns, Copyright Considerations, Enterprise AI Usage",
+          "Practical: Identifying AI mistakes and fact-checking responses."
+        ]
+      },
+      {
+        "week": "Module 3 (6 Hours)",
+        "title": "Prompt Engineering Fundamentals",
+        "topics": [
+          "Anatomy of a Great Prompt: Role, Context, Objective, Constraints, Output Format",
+          "Prompting Techniques: Zero-Shot Prompting, One-Shot Prompting, Few-Shot Prompting",
+          "Chain-of-Thought Prompting & Step-by-Step Reasoning",
+          "Tree-of-Thought Concepts",
+          "Structured Prompt Design: Templates, Frameworks, Reusable Systems",
+          "Practical: Transform weak prompts into professional-grade prompts."
+        ]
+      },
+      {
+        "week": "Module 4 (5 Hours)",
+        "title": "Advanced Prompt Engineering",
+        "topics": [
+          "Advanced Strategies: Persona-Based Prompting, Expert Role Prompting, Multi-Agent Prompting",
+          "Self-Critique Prompting & Reflection Loops",
+          "Output Optimization: Structured JSON Outputs, Reports, Tables, Research Documents, Presentations",
+          "Prompt Libraries: Building reusable prompt repositories",
+          "Practical: Create enterprise-ready prompt systems."
+        ]
+      },
+      {
+        "week": "Module 5 (5 Hours)",
+        "title": "AI for Productivity & Automation",
+        "topics": [
+          "AI-Powered Workflows: Research Automation, Meeting Summaries, Documentation, Knowledge Management",
+          "No-Code Automation: Introduction to Zapier, Make, n8n",
+          "AI Workflow Design: Trigger → Process → Action",
+          "Human-in-the-Loop Systems",
+          "Practical: Build an AI-powered business workflow."
+        ]
+      },
+      {
+        "week": "Module 6 (5 Hours)",
+        "title": "AI Applications Across Industries",
+        "topics": [
+          "Software Development: Code Generation, Code Review, Documentation, Debugging Assistance",
+          "Marketing: Content Strategy, Social Media Planning, SEO Research, Ad Copy Creation",
+          "Data Analysis: Data Interpretation, Visualization Assistance, Report Generation",
+          "Entrepreneurship: Market Research, Business Models, Pitch Deck Creation, Competitor Analysis",
+          "Education: Personalized Learning, Study Assistants, Research Support"
+        ]
+      },
+      {
+        "week": "Module 7 (4 Hours)",
+        "title": "Building AI Assistants & Agents",
+        "topics": [
+          "What Are AI Agents? Agent vs Chatbot, Tool Usage, Decision Making",
+          "Agent Architectures: Single-Agent Systems, Multi-Agent Systems",
+          "Introduction to Agent Frameworks: LangChain, CrewAI, AutoGen, OpenAI Agents SDK, Google Agent Development Kit",
+          "Practical: Build a simple AI assistant workflow."
+        ]
+      },
+      {
+        "week": "Module 8 (4 Hours)",
+        "title": "Capstone Project",
+        "topics": [
+          "Students choose one of the following live projects:",
+          "Project 1: AI Startup Advisor",
+          "Project 2: AI Research Assistant",
+          "Project 3: AI Content Generation System",
+          "Project 4: AI Customer Support Assistant",
+          "Project 5: AI Resume & Career Coach"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    },
+    "tools": [
+      "ChatGPT",
+      "Claude",
+      "Gemini",
+      "Perplexity",
+      "Notion",
+      "n8n",
+      "Make",
+      "Zapier"
+    ],
+    "faqs": [
+      {
+        "question": "Who is this course for?",
+        "answer": "Professionals, founders, builders, and developers looking to multiply their productivity."
+      },
+      {
+        "question": "Is coding required?",
+        "answer": "No coding experience is required. The program is designed for all levels."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    }
+  },
+  {
+    "id": "full-stack-mern-development",
+    "slug": "full-stack-mern-development",
+    "title": "Full Stack MERN Development",
+    "description": "Build production-ready web applications using MongoDB, Express, React, and Node.js. Go from zero to deploying production-grade apps.",
+    "category": "Development",
+    "level": "Beginner to Advanced",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "MongoDB",
+      "Express",
+      "React",
+      "Node.js",
+      "Vercel",
+      "GitHub"
+    ],
+    "image": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=2070&auto=format&fit=crop",
+    "overview": "Learn how modern web applications are built using the MERN Stack (MongoDB, Express.js, React.js, Node.js), develop responsive user interfaces, create backend APIs, manage databases, and deploy full-stack applications.",
+    "outcomes": [
+      "Understand full-stack web development architecture",
+      "Build responsive frontend applications using React",
+      "Develop backend APIs using Node.js and Express.js",
+      "Work with MongoDB databases",
+      "Implement secure authentication systems & deploy to production"
+    ],
+    "projects": 4,
+    "curriculum": [
+      {
+        "week": "Module 1 (4 Hours)",
+        "title": "Web Development Fundamentals",
+        "topics": [
+          "Introduction to Web Development: How the Web Works, Client-Server Architecture, Frontend vs Backend",
+          "APIs and Databases Overview",
+          "HTML5: Semantic Elements, Forms, Tables, Media",
+          "CSS3: Flexbox, Grid, Responsive Design, Modern UI Principles",
+          "Practical: Build a responsive landing page."
+        ]
+      },
+      {
+        "week": "Module 2 (5 Hours)",
+        "title": "JavaScript Essentials",
+        "topics": [
+          "JavaScript Fundamentals: Variables, Data Types, Functions, Arrays, Objects",
+          "Modern JavaScript (ES6+): Arrow Functions, Destructuring, Template Literals, Modules",
+          "Asynchronous JS: Async/Await, Promises",
+          "DOM Manipulation, Events, Forms, Dynamic Content",
+          "Practical: Build an interactive web application."
+        ]
+      },
+      {
+        "week": "Module 3 (8 Hours)",
+        "title": "React.js Frontend Development",
+        "topics": [
+          "Introduction to React: Component-Based Architecture, JSX, Virtual DOM",
+          "React Fundamentals: Components, Props, State, Event Handling",
+          "Hooks: useState, useEffect",
+          "Routing: React Router",
+          "API Integration: Fetch API, Axios",
+          "Practical: Build a multi-page React application."
+        ]
+      },
+      {
+        "week": "Module 4 (7 Hours)",
+        "title": "Backend Development with Node.js & Express.js",
+        "topics": [
+          "Node.js Fundamentals: Runtime Environment, Modules, npm Ecosystem",
+          "Express.js Server Creation, Routing, Middleware",
+          "REST APIs: CRUD Operations, Request & Response Handling, API Testing",
+          "Practical: Build a RESTful API."
+        ]
+      },
+      {
+        "week": "Module 5 (4 Hours)",
+        "title": "Database Management with MongoDB",
+        "topics": [
+          "Database Fundamentals: SQL vs NoSQL, Collections and Documents",
+          "MongoDB Basics: CRUD Operations, Queries, Indexing Concepts",
+          "Mongoose: Schemas, Models, Validation",
+          "Practical: Connect application with MongoDB."
+        ]
+      },
+      {
+        "week": "Module 6 (3 Hours)",
+        "title": "Authentication & Security",
+        "topics": [
+          "Authentication Concepts: User Registration, Login Systems",
+          "JWT Authentication Tokens, Protected Routes",
+          "Security Best Practices: Password Hashing, Environment Variables, Basic Security Measures",
+          "Practical: Implement login and authentication."
+        ]
+      },
+      {
+        "week": "Module 7 (3 Hours)",
+        "title": "Deployment & Modern Development Workflow",
+        "topics": [
+          "Git & GitHub: Repository Management, Branching Basics",
+          "Deployment: Frontend Deployment, Backend Deployment, Environment Configuration",
+          "Modern Development Practices: Debugging, Code Organization, Project Structure",
+          "Practical: Deploy application online."
+        ]
+      },
+      {
+        "week": "Module 8 (6 Hours)",
+        "title": "Capstone Project",
+        "topics": [
+          "Option 1: Student Management System (Auth, Dashboard, CRUD, DB Integration)",
+          "Option 2: Job Portal (User Login, Job Listings, Application System)",
+          "Option 3: E-Commerce Store (Product Catalog, Shopping Cart, Authentication)",
+          "Option 4: Learning Management System (Course Listings, User Management, Progress Tracking)"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    },
+    "tools": [
+      "VS Code",
+      "GitHub",
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB Atlas",
+      "Postman",
+      "Vercel",
+      "Render"
+    ],
+    "faqs": [
+      {
+        "question": "Will I get a certificate?",
+        "answer": "Yes, you will get an industry-recognized certificate of completion after completing the capstone projects."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    }
+  },
+  {
+    "id": "data-science-machine-learning-generative-ai",
+    "slug": "data-science-machine-learning-generative-ai",
+    "title": "Data Science, Machine Learning & Generative AI",
+    "description": "Learn the complete Data Science workflow, build machine learning models, and gain practical exposure to Generative AI & LLMs.",
+    "category": "Data & AI",
+    "level": "Beginner to Advanced",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "Python",
+      "Pandas",
+      "Scikit-Learn",
+      "TensorFlow",
+      "Generative AI"
+    ],
+    "image": "https://images.unsplash.com/photo-1527474305487-b87b222841cc?q=80&w=2074&auto=format&fit=crop",
+    "overview": "Learn the complete Data Science workflow, perform data analysis, build machine learning models, generate business insights, and gain practical exposure to Generative AI and Large Language Models (LLMs).",
+    "outcomes": [
+      "Understand the Data Science workflow",
+      "Clean and analyze real-world datasets",
+      "Apply statistical methods to business problems",
+      "Build machine learning models",
+      "Evaluate and optimize model performance",
+      "Understand neural networks and deep learning concepts",
+      "Gain practical exposure to Generative AI and LLMs",
+      "Build industry-oriented Data Science projects"
+    ],
+    "projects": 4,
+    "curriculum": [
+      {
+        "week": "Module 1 (4 Hours)",
+        "title": "Foundations of Data Science",
+        "topics": [
+          "Introduction to Data Science: What is Data Science?, Data Science Lifecycle, Business Applications, Role of Data Scientists",
+          "Python for Data Science: Variables, Data Types, Functions, Lists, Dictionaries",
+          "Data Science Environment: Jupyter Notebook, NumPy, Pandas Overview",
+          "Practical: Data exploration using Python."
+        ]
+      },
+      {
+        "week": "Module 2 (5 Hours)",
+        "title": "Data Analysis & Visualization",
+        "topics": [
+          "Data Collection: CSV Files, Excel Files, Public Datasets",
+          "Data Cleaning: Missing Values, Duplicates, Outliers",
+          "Data Transformation",
+          "Exploratory Data Analysis (EDA): Univariate Analysis, Bivariate Analysis, Correlation Analysis",
+          "Data Visualization: Bar Charts, Line Charts, Histograms, Scatter Plots",
+          "Practical: Customer dataset analysis."
+        ]
+      },
+      {
+        "week": "Module 3 (4 Hours)",
+        "title": "Statistics for Data Science",
+        "topics": [
+          "Descriptive Statistics: Mean, Median, Mode, Standard Deviation",
+          "Probability Fundamentals: Probability Concepts, Distributions, Sampling",
+          "Business Interpretation: Data-Driven Decisions, KPI Analysis",
+          "Practical: Statistical analysis exercises."
+        ]
+      },
+      {
+        "week": "Module 4 (6 Hours)",
+        "title": "Machine Learning Fundamentals",
+        "topics": [
+          "Machine Learning Overview: Supervised Learning, Unsupervised Learning",
+          "Data Preparation: Feature Engineering, Encoding, Feature Scaling",
+          "Regression Models: Linear Regression, Polynomial Regression",
+          "Classification Models: Logistic Regression, Decision Trees, K-Nearest Neighbors (KNN)",
+          "Practical: Build a prediction model."
+        ]
+      },
+      {
+        "week": "Module 5 (4 Hours)",
+        "title": "Advanced Machine Learning",
+        "topics": [
+          "Model Evaluation: Train-Test Split, Cross Validation, Evaluation Metrics",
+          "Ensemble Learning: Random Forest, XGBoost (Introduction)",
+          "Clustering: K-Means, Customer Segmentation",
+          "Practical: Customer segmentation project."
+        ]
+      },
+      {
+        "week": "Module 6 (3 Hours)",
+        "title": "Introduction to Deep Learning",
+        "topics": [
+          "Neural Networks: ANN Fundamentals, Activation Functions",
+          "Deep Learning Applications: Image Classification, Text Analysis",
+          "Practical: Build a simple neural network model."
+        ]
+      },
+      {
+        "week": "Module 7 (5 Hours)",
+        "title": "Generative AI & Large Language Models",
+        "topics": [
+          "Evolution of AI: Traditional AI, Machine Learning, Deep Learning, Generative AI",
+          "Understanding LLMs: Tokens, Context Windows, Transformer Architecture, Attention Mechanism",
+          "Modern AI Models: Overview of GPT, Claude, Gemini, Llama, DeepSeek, Mistral",
+          "Practical AI Applications: AI for Data Analysis, AI for Research, AI for Business Insights",
+          "RAG Fundamentals: Retrieval-Augmented Generation, Knowledge-Based AI Systems",
+          "Practical: Build a simple AI-powered data assistant."
+        ]
+      },
+      {
+        "week": "Module 8 (5 Hours)",
+        "title": "Capstone Project",
+        "topics": [
+          "Project 1: Sales Prediction System (Skills: Data Cleaning, Machine Learning, Visualization)",
+          "Project 2: Customer Segmentation Dashboard (Skills: Clustering, Data Analysis, Business Insights)",
+          "Project 3: Employee Attrition Analysis (Skills: Classification Models, Feature Engineering, Reporting)",
+          "Project 4: AI-Powered Analytics Assistant (Skills: Data Science, LLM Concepts, Insight Generation)"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    },
+    "tools": [
+      "Python",
+      "NumPy",
+      "Pandas",
+      "Scikit-Learn",
+      "TensorFlow",
+      "Jupyter",
+      "ChatGPT",
+      "Claude",
+      "Gemini",
+      "DeepSeek",
+      "Google Colab"
+    ],
+    "faqs": [
+      {
+        "question": "Is Google Colab covered?",
+        "answer": "Yes, you'll learn how to run heavy model architectures and training pipelines on Google Colab."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    }
+  },
+  {
+    "id": "data-analytics-business-intelligence",
+    "slug": "data-analytics-business-intelligence",
+    "title": "Data Analytics & Business Intelligence",
+    "description": "Learn how to collect, clean, analyze, visualize, and interpret data using Python, SQL, Excel, and Power BI.",
+    "category": "Data & AI",
+    "level": "Beginner to Intermediate",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "Excel",
+      "Python",
+      "Power BI",
+      "SQL",
+      "Copilot"
+    ],
+    "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+    "overview": "Learn how to collect, clean, analyze, visualize, and interpret data using Python, SQL, Excel, and Power BI. Develop dashboards, generate business insights, and build industry-ready analytics projects.",
+    "outcomes": [
+      "Collect data from multiple sources",
+      "Clean and transform datasets",
+      "Perform Exploratory Data Analysis (EDA)",
+      "Write SQL queries for business insights",
+      "Build interactive Power BI dashboards",
+      "Generate actionable recommendations",
+      "Apply AI in analytics workflows",
+      "Develop a professional analytics portfolio"
+    ],
+    "projects": 4,
+    "curriculum": [
+      {
+        "week": "Module 1 (4 Hours)",
+        "title": "Foundations of Data Analytics",
+        "topics": [
+          "Introduction to Data Analytics: What is Data Analytics?, Analytics Lifecycle, Business Decision Making, Data-Driven Organizations",
+          "Types of Analytics: Descriptive, Diagnostic, Predictive, Prescriptive",
+          "Role of a Data Analyst: Responsibilities, Industry Applications, Career Roadmap",
+          "Practical: Analyze real-world business cases."
+        ]
+      },
+      {
+        "week": "Module 2 (5 Hours)",
+        "title": "Python for Data Analytics",
+        "topics": [
+          "Python Essentials: Variables, Data Types, Lists, Dictionaries, Functions",
+          "Jupyter Notebook Environment: Setup, Notebook Workflow",
+          "NumPy Fundamentals: Arrays, Indexing, Slicing, Mathematical Operations, Statistical Operations",
+          "Practical: Data manipulation exercises."
+        ]
+      },
+      {
+        "week": "Module 3 (5 Hours)",
+        "title": "Data Collection & Data Wrangling",
+        "topics": [
+          "Data Sources: CSV Files, Excel Files, Databases, APIs, Public Datasets",
+          "Pandas Fundamentals: DataFrames, Data Import & Export, Filtering, Sorting, Grouping",
+          "Data Cleaning: Missing Values, Duplicate Records, Data Type Conversion, Outlier Handling",
+          "Practical: Clean and prepare a customer dataset."
+        ]
+      },
+      {
+        "week": "Module 4 (5 Hours)",
+        "title": "Exploratory Data Analysis (EDA)",
+        "topics": [
+          "Data Exploration: Summary Statistics, Distribution Analysis, Trend Analysis",
+          "Correlation & Relationships: Correlation Matrix, Comparative Analysis, Pattern Identification",
+          "Business Insights: KPI Identification, Performance Analysis, Insight Generation",
+          "Practical: Perform EDA on business datasets."
+        ]
+      },
+      {
+        "week": "Module 5 (4 Hours)",
+        "title": "Data Visualization & Storytelling",
+        "topics": [
+          "Visualization using Python: Bar Charts, Line Charts, Histograms, Scatter Plots, Box Plots",
+          "Data Storytelling: Presenting Insights, Visualization Best Practices, Executive Reporting",
+          "Practical: Create visual reports and dashboards."
+        ]
+      },
+      {
+        "week": "Module 6 (5 Hours)",
+        "title": "SQL for Data Analytics",
+        "topics": [
+          "Database Fundamentals: Relational Databases, Tables, Relationships",
+          "SQL Essentials: SELECT, WHERE, ORDER BY, GROUP BY, HAVING",
+          "Advanced SQL: JOINS, Subqueries, CTEs, Window Functions",
+          "Practical: Extract and analyze business data using SQL."
+        ]
+      },
+      {
+        "week": "Module 7 (5 Hours)",
+        "title": "Power BI Dashboard Development",
+        "topics": [
+          "Power BI Fundamentals: Data Import, Data Transformation, Data Modeling",
+          "Dashboard Development: KPI Cards, Interactive Reports, Slicers & Filters, Drill-Down Reports",
+          "Dashboard Design: Layout, User Experience, Business Reporting",
+          "Practical: Build an executive-level dashboard."
+        ]
+      },
+      {
+        "week": "Module 8 (2 Hours)",
+        "title": "AI for Data Analytics",
+        "topics": [
+          "AI-Assisted Analytics: AI for Data Cleaning, AI for SQL Query Generation, AI for Insight Discovery, AI for Report Creation",
+          "Tools Exposure: ChatGPT, Claude, Gemini, Microsoft Copilot",
+          "Responsible Usage: Validation Accuracy Checks, Data Privacy",
+          "Practical: Analyze data using AI-assisted workflows."
+        ]
+      },
+      {
+        "week": "Capstone Project (5 Hours)",
+        "title": "Capstone Project Selection",
+        "topics": [
+          "Project 1: User Engagement Analytics Dashboard (User Activity, Retention, Session Duration, Engagement Metrics)",
+          "Project 2: Sales Performance Dashboard (Revenue, Products, Regional Performance, Trends)",
+          "Project 3: Vendor Performance Analytics (Delivery Performance, Fulfillment Rates, Vendor Efficiency, Operational KPIs)",
+          "Project 4: Marketing Analytics Dashboard (Campaign Performance, Lead Generation, Conversion Metrics, ROI Analysis)"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    },
+    "tools": [
+      "Microsoft Excel",
+      "Python",
+      "NumPy",
+      "Pandas",
+      "Jupyter Notebook",
+      "MySQL",
+      "PostgreSQL (Overview)",
+      "Power BI",
+      "ChatGPT",
+      "Claude",
+      "Gemini",
+      "Microsoft Copilot"
+    ],
+    "faqs": [
+      {
+        "question": "Do I need a math background?",
+        "answer": "Basic math is helpful but not required. The program builds intuition step by step."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Lifetime access to session recordings",
+        "Hands-on coding workshops",
+        "Industry-recognized certificate",
+        "2 Capstone projects",
+        "Discord builder network"
+      ]
+    }
+  },
+  {
+    "id": "cloud-devops-engineering",
+    "slug": "cloud-devops-engineering",
+    "title": "Cloud & DevOps Engineering",
+    "description": "Master Amazon Web Services from core infrastructure to serverless architectures and cloud-native application deployment with DevOps workflows.",
+    "category": "Cloud & DevOps",
+    "level": "Intermediate",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "AWS",
+      "EC2",
+      "S3",
+      "Lambda",
+      "Terraform",
+      "Docker"
+    ],
+    "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop",
+    "overview": "This program trains you in Amazon Web Services — the world's leading cloud platform, alongside core DevOps tools. You'll go from understanding cloud fundamentals to deploying scalable, containerized infrastructure.",
+    "outcomes": [
+      "Architect scalable cloud infrastructure on AWS",
+      "Deploy containerized applications with ECS, ECR, and Docker",
+      "Build serverless functions with AWS Lambda",
+      "Implement automated CI/CD pipelines",
+      "Pass AWS Cloud Practitioner exam preparation"
+    ],
+    "projects": 3,
+    "curriculum": [
+      {
+        "week": "Module 1",
+        "title": "AWS Fundamentals & Core Services",
+        "topics": [
+          "IAM & security",
+          "EC2 & VPC",
+          "S3 & CloudFront",
+          "Route 53 & DNS"
+        ]
+      },
+      {
+        "week": "Module 2",
+        "title": "Serverless & Managed Services",
+        "topics": [
+          "AWS Lambda",
+          "API Gateway",
+          "DynamoDB",
+          "RDS & Aurora"
+        ]
+      },
+      {
+        "week": "Module 3",
+        "title": "Containers & DevOps",
+        "topics": [
+          "Docker & ECS",
+          "ECR",
+          "CodePipeline & CodeBuild",
+          "CloudFormation & Terraform"
+        ]
+      },
+      {
+        "week": "Module 4",
+        "title": "Advanced Architecture & Monitoring",
+        "topics": [
+          "Auto Scaling",
+          "Load Balancers",
+          "CloudWatch monitoring",
+          "Cost optimization"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "AWS account sandbox labs",
+        "Mentor-led sessions",
+        "Exam prep material",
+        "Certificate of completion"
+      ]
+    },
+    "tools": [
+      "AWS Console",
+      "AWS CLI",
+      "Terraform",
+      "Docker",
+      "GitHub Actions"
+    ],
+    "faqs": [
+      {
+        "question": "Do I need a DevOps background?",
+        "answer": "Basic Linux and networking knowledge helps, but the program covers everything from the ground up."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "AWS account sandbox labs",
+        "Mentor-led sessions",
+        "Exam prep material",
+        "Certificate of completion"
+      ]
+    }
+  },
+  {
+    "id": "dsa-python",
+    "slug": "dsa-python",
+    "title": "DSA with Python",
+    "description": "Crack technical interviews with a structured, problem-first approach to Data Structures & Algorithms using Python.",
+    "category": "Computer Science",
+    "level": "Beginner to Advanced",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "Python",
+      "LeetCode",
+      "Data Structures",
+      "Algorithms",
+      "System Design"
+    ],
+    "image": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=2128&auto=format&fit=crop",
+    "overview": "Stop grinding LeetCode blindly. This program gives you a structured, pattern-based approach to master DSA in Python and crack top tech company interviews with confidence.",
+    "outcomes": [
+      "Master all core data structures (Arrays, Trees, Graphs, DP) in Python",
+      "Solve 200+ curated interview problems",
+      "Learn time & space complexity analysis",
+      "Crack FAANG-level system design basics",
+      "Build interview confidence through mock sessions"
+    ],
+    "projects": 4,
+    "curriculum": [
+      {
+        "week": "Module 1",
+        "title": "Arrays, Strings & Complexity",
+        "topics": [
+          "Big O analysis",
+          "Array patterns",
+          "Two pointer, sliding window",
+          "String manipulation"
+        ]
+      },
+      {
+        "week": "Module 2",
+        "title": "Linked Lists, Stacks & Queues",
+        "topics": [
+          "Singly/doubly linked lists",
+          "Stack & queue operations",
+          "Monotonic stack",
+          "LRU cache"
+        ]
+      },
+      {
+        "week": "Module 3",
+        "title": "Trees & Graphs",
+        "topics": [
+          "Binary trees",
+          "BST",
+          "BFS & DFS",
+          "Graph algorithms"
+        ]
+      },
+      {
+        "week": "Module 4",
+        "title": "Dynamic Programming",
+        "topics": [
+          "Memoization vs tabulation",
+          "1D & 2D DP",
+          "Knapsack patterns",
+          "Practice problems"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "200+ problem set",
+        "Mock interviews",
+        "Video solutions",
+        "Certificate",
+        "Discord community"
+      ]
+    },
+    "tools": [
+      "LeetCode",
+      "VS Code",
+      "Python"
+    ],
+    "faqs": [
+      {
+        "question": "Which language is used?",
+        "answer": "This program is optimized specifically for Python, but the concepts apply universally."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "200+ problem set",
+        "Mock interviews",
+        "Video solutions",
+        "Certificate",
+        "Discord community"
+      ]
+    }
+  },
+  {
+    "id": "digital-marketing-growth-strategy",
+    "slug": "digital-marketing-growth-strategy",
+    "title": "Digital Marketing & Growth Strategy",
+    "description": "Master performance marketing, content strategy, SEO, paid ads, and growth frameworks used by top brands.",
+    "category": "Marketing & Growth",
+    "level": "Beginner to Intermediate",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "SEO",
+      "Google Ads",
+      "Meta Ads",
+      "Content Strategy",
+      "AI Marketing"
+    ],
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+    "overview": "Learn modern digital marketing from a builder's perspective — not theory, but real strategies used by fast-growing startups and D2C brands to acquire users at scale using AI-powered modern tools.",
+    "outcomes": [
+      "Run profitable Google & Meta ad campaigns",
+      "Build SEO strategies that generate organic traffic",
+      "Create high-converting content frameworks",
+      "Analyze marketing data in Google Analytics 4",
+      "Build marketing funnels and growth loops"
+    ],
+    "projects": 5,
+    "curriculum": [
+      {
+        "week": "Module 1 (3 Hours)",
+        "title": "Introduction to Digital Marketing",
+        "topics": [
+          "Digital Marketing Ecosystem: Evolution of Marketing, Traditional vs Digital Marketing",
+          "Customer Journey & Marketing Funnel",
+          "Modern Marketing Channels: Search, Social Media, Content, Influencer, Email, Performance",
+          "Understanding Consumer Behavior: Attention Economy, Buyer Psychology, Trust & Community Building",
+          "Practical: Analyze successful brands and creators."
+        ]
+      },
+      {
+        "week": "Module 2 (4 Hours)",
+        "title": "Branding & Personal Branding",
+        "topics": [
+          "Brand Fundamentals: Brand Identity, Positioning, Voice, Storytelling",
+          "Personal Branding: LinkedIn Growth, Founder Branding, Creator Economy, Thought Leadership, Building Authority",
+          "Content Pillars & Audience Targeting: Niche Selection",
+          "Practical: Create a personal brand strategy."
+        ]
+      },
+      {
+        "week": "Module 3 (6 Hours)",
+        "title": "Content Marketing & Social Media",
+        "topics": [
+          "Content Strategy: Planning, Calendars, Audience Research",
+          "Social Media Platforms: LinkedIn, Instagram, Facebook, X (Twitter), YouTube, Threads",
+          "Short Form Content: Reels, Shorts, Viral Hooks, Retention Strategies",
+          "AI-Powered Content Creation: Using ChatGPT, Claude, Gemini, Perplexity, Canva AI",
+          "Practical: Build a 30-day content plan."
+        ]
+      },
+      {
+        "week": "Module 4 (5 Hours)",
+        "title": "Search Engine Optimization (SEO)",
+        "topics": [
+          "Modern SEO: Search Intent, Keyword Research, On-Page SEO, Technical SEO Fundamentals",
+          "AI Search Optimization (NEW 2026): Google AI Overviews, Generative Engine Optimization (GEO), LLM Visibility, Answer Engine Optimization (AEO)",
+          "SEO Tools: Google Search Console, Google Keyword Planner, Ahrefs, SEMrush Overview",
+          "Practical: Optimize a website page."
+        ]
+      },
+      {
+        "week": "Module 5 (5 Hours)",
+        "title": "Performance Marketing",
+        "topics": [
+          "Meta Ads: Campaign Structure, Audience Targeting, Retargeting, Lead Generation",
+          "Google Ads: Search Ads, Display Ads, Video Ads",
+          "Conversion Optimization: Landing Pages, CTA Design, A/B Testing",
+          "Practical: Design ad campaigns."
+        ]
+      },
+      {
+        "week": "Module 6 (3 Hours)",
+        "title": "Email Marketing & Automation",
+        "topics": [
+          "Email Marketing: Lead Magnets, Email Funnels, Newsletter Strategy",
+          "Marketing Automation: Introduction to Mailchimp, Brevo, HubSpot, Automation Concepts, Lead Nurturing, Drip Campaigns, Customer Lifecycle",
+          "Practical: Build an automated email sequence."
+        ]
+      },
+      {
+        "week": "Module 7 (4 Hours)",
+        "title": "Analytics & Growth Measurement",
+        "topics": [
+          "Google Analytics 4: Events, Conversions, User Journey Analysis",
+          "Marketing KPIs: CTR, CPC, CPA, ROAS, CAC, LTV",
+          "Dashboarding: Looker Studio Basics",
+          "Practical: Create marketing reports."
+        ]
+      },
+      {
+        "week": "Module 8 (4 Hours)",
+        "title": "AI in Marketing",
+        "topics": [
+          "AI-Powered Marketing Workflows: Research Automation, Content Automation, Ad Copy Generation, Customer Support Automation",
+          "AI Tools Exposure: ChatGPT, Claude, Gemini, Perplexity, NotebookLM, Canva AI",
+          "Ethics & Limitations: AI Hallucinations, Copyright, Responsible Usage",
+          "Practical: Create an AI-powered marketing workflow."
+        ]
+      },
+      {
+        "week": "Capstone Project (4 Hours)",
+        "title": "Capstone Projects Selection",
+        "topics": [
+          "Project 1: Launch a Digital Marketing Strategy for a Startup",
+          "Project 2: Build a Personal Brand Growth Plan",
+          "Project 3: Create a Social Media Campaign",
+          "Project 4: Design a Complete Marketing Funnel",
+          "Project 5: Create an AI-Powered Marketing System"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Google Ads simulation account",
+        "Meta Ads practice",
+        "GA4 lab access",
+        "Certificate"
+      ]
+    },
+    "tools": [
+      "ChatGPT",
+      "Claude",
+      "Gemini",
+      "Perplexity",
+      "Canva AI",
+      "Google Analytics",
+      "Mailchimp",
+      "HubSpot"
+    ],
+    "faqs": [
+      {
+        "question": "Is GA4 covered?",
+        "answer": "Yes, you'll practice extensively in GA4 lab sessions to analyze user funnels and marketing attribution."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Google Ads simulation account",
+        "Meta Ads practice",
+        "GA4 lab access",
+        "Certificate"
+      ]
+    }
+  },
+  {
+    "id": "startup-entrepreneurship",
+    "slug": "startup-entrepreneurship",
+    "title": "Startup & Entrepreneurship",
+    "description": "From idea to MVP. Learn how to validate ideas, build startup models, create brands, and pitch to investors.",
+    "category": "Business & Strategy",
+    "level": "Beginner",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "Business Model Canvas",
+      "MVP",
+      "Pitch Deck",
+      "GTM Plan"
+    ],
+    "image": "https://images.unsplash.com/photo-1559136555-9303baea8ebd?q=80&w=2070&auto=format&fit=crop",
+    "overview": "Learn how to identify opportunities, validate ideas, build startup models, create brands, leverage AI tools, develop MVPs, and launch real-world ventures using modern entrepreneurial frameworks.",
+    "outcomes": [
+      "Identify and validate startup opportunities",
+      "Conduct market and competitor research",
+      "Design sustainable business models",
+      "Build startup brands and growth strategies",
+      "Develop MVPs using modern tools",
+      "Understand startup operations and legal basics",
+      "Prepare investor-ready pitch decks",
+      "Launch and evaluate startup ideas systematically"
+    ],
+    "projects": 1,
+    "curriculum": [
+      {
+        "week": "Module 1 (3 Hours)",
+        "title": "Entrepreneurial Mindset & Startup Fundamentals",
+        "topics": [
+          "Understanding Entrepreneurship: Entrepreneur vs Business Owner, Startup vs Traditional Business, Solving Problems at Scale, Innovation & Value Creation",
+          "Startup Ecosystem: Founders, Co-Founders, Investors, Accelerators, Incubators",
+          "Modern Entrepreneurship: Lean Startup Thinking, Digital-First Businesses, AI-Powered Businesses",
+          "Activity: Analyze successful startups and their journeys."
+        ]
+      },
+      {
+        "week": "Module 2 (4 Hours)",
+        "title": "Idea Generation & Opportunity Identification",
+        "topics": [
+          "Problem Discovery: Finding Real Problems, Market Gaps, Industry Pain Points",
+          "Idea Validation: Problem-Solution Fit, Customer Discovery, Early Feedback Collection",
+          "Opportunity Assessment: Market Size, Competition Analysis, Industry Trends",
+          "Practical: Generate and evaluate startup ideas."
+        ]
+      },
+      {
+        "week": "Module 3 (4 Hours)",
+        "title": "Market Research & Customer Validation",
+        "topics": [
+          "Understanding Customers: Target Audience, Customer Personas, User Behaviour",
+          "Research Methods: Surveys, Interviews, Competitor Analysis",
+          "Validation Techniques: Landing Pages, Waitlists, MVP Testing",
+          "Practical: Conduct market validation for a startup idea."
+        ]
+      },
+      {
+        "week": "Module 4 (4 Hours)",
+        "title": "Business Models & Revenue Strategies",
+        "topics": [
+          "Business Model Fundamentals: Business Model Canvas, Value Proposition Canvas",
+          "Revenue Models: Subscription SaaS, Marketplace, E-Commerce, Service-Based, Freemium",
+          "Unit Economics: Customer Acquisition Cost (CAC), Lifetime Value (LTV), Profitability Basics",
+          "Practical: Design a business model for a startup."
+        ]
+      },
+      {
+        "week": "Module 5 (5 Hours)",
+        "title": "Branding, Marketing & Growth",
+        "topics": [
+          "Startup Branding: Brand Identity, Positioning, Messaging",
+          "Digital Presence: Website Essentials, Social Media Strategy, Personal Branding",
+          "Growth Strategies: Organic Growth, Community Building, Content Marketing",
+          "AI-Powered Marketing: Using AI for Research, Content Creation, Customer Engagement",
+          "Practical: Create a startup branding strategy."
+        ]
+      },
+      {
+        "week": "Module 6 (5 Hours)",
+        "title": "MVP Development & Product Thinking",
+        "topics": [
+          "Product Development Basics: MVP (Minimum Viable Product), Product-Market Fit",
+          "No-Code & AI Tools: Exposure to Bolt, Lovable, Replit, Cursor, Canva, Figma",
+          "Building Fast Landing Pages, Prototypes, Early Products",
+          "Practical: Build an MVP prototype."
+        ]
+      },
+      {
+        "week": "Module 7 (3 Hours)",
+        "title": "Startup Operations & Legal Basics",
+        "topics": [
+          "Team Building: Co-Founder Selection, Hiring Early Team Members",
+          "Business Structures: Sole Proprietorship, Partnership, LLP, Private Limited Company",
+          "Intellectual Property: Trademarks, Copyright, Patents (Overview)",
+          "Financial Basics: Budgeting, Cash Flow, Startup Expenses",
+          "Practical: Startup structure selection exercise."
+        ]
+      },
+      {
+        "week": "Module 8 (4 Hours)",
+        "title": "Funding & Investor Readiness",
+        "topics": [
+          "Funding Landscape: Bootstrapping, Angel Investment, Venture Capital, Grants",
+          "Investor Expectations: Traction, Market Size, Team Strength",
+          "Pitch Deck Essentials: Problem, Solution, Business Model, Market Opportunity, Financials",
+          "Practical: Create a startup pitch deck."
+        ]
+      },
+      {
+        "week": "Capstone Project (6 Hours)",
+        "title": "Capstone Project (Startup Launch Blueprint)",
+        "topics": [
+          "Students work in teams and build: Startup Launch Blueprint including: Problem Statement, Market Research, Customer Persona, Business Model Canvas, Branding Strategy, MVP Prototype, Go-To-Market Plan, Investor Pitch Deck, Final Presentation"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Founder mentorship sessions",
+        "Investor pitch review",
+        "Startup toolkit",
+        "Certificate",
+        "Alumni network"
+      ]
+    },
+    "tools": [
+      "ChatGPT",
+      "Claude",
+      "Gemini",
+      "Perplexity",
+      "Figma",
+      "Canva",
+      "Bolt",
+      "Lovable",
+      "Replit",
+      "Google Trends"
+    ],
+    "faqs": [
+      {
+        "question": "Do I need a technical background?",
+        "answer": "No, this program is designed for all aspiring non-technical and technical founders."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Founder mentorship sessions",
+        "Investor pitch review",
+        "Startup toolkit",
+        "Certificate",
+        "Alumni network"
+      ]
+    }
+  },
+  {
+    "id": "advanced-excel-business-analytics",
+    "slug": "advanced-excel-business-analytics",
+    "title": "Advanced Excel & Business Analytics",
+    "description": "Master financial modeling, macros, Power Query, dashboards, and Excel-based business analytics.",
+    "category": "Productivity & Tools",
+    "level": "Intermediate",
+    "duration": "30–40 Hours",
+    "schedule": "2–3 Days Per Week",
+    "mode": "Hands-On Practical Training",
+    "type": "Industrial",
+    "price": "₹1,249",
+    "practicalHours": "30–40 Hours",
+    "tags": [
+      "Excel",
+      "Power Query",
+      "Dashboards",
+      "Power BI",
+      "Copilot"
+    ],
+    "image": "https://images.unsplash.com/photo-1543286386-2e659306cd6c?q=80&w=2070&auto=format&fit=crop",
+    "overview": "Learn to analyze, clean, visualize, automate, and interpret business data using Microsoft Excel. Develop professional dashboards and reports used across finance, operations, marketing, HR, sales, and management functions.",
+    "outcomes": [
+      "Organize and manage large datasets",
+      "Apply advanced formulas and functions",
+      "Clean and prepare business data",
+      "Build Pivot Tables and Pivot Charts",
+      "Design professional dashboards",
+      "Automate reporting workflows",
+      "Analyze and interpret business performance",
+      "Generate actionable business insights"
+    ],
+    "projects": 4,
+    "curriculum": [
+      {
+        "week": "Module 1 (3 Hours)",
+        "title": "Excel Fundamentals & Productivity",
+        "topics": [
+          "Excel Environment, Workbook & Worksheet Management",
+          "Data Types, Cell Referencing, Named Ranges",
+          "Productivity Techniques: Keyboard Shortcuts, Flash Fill",
+          "Data Validation, Conditional Formatting",
+          "Practical: Build structured spreadsheets efficiently."
+        ]
+      },
+      {
+        "week": "Module 2 (6 Hours)",
+        "title": "Formula & Function Mastery",
+        "topics": [
+          "Essential Functions: SUM, AVERAGE, COUNT, MAX, MIN",
+          "Logical Functions: IF, IFS, AND, OR, SWITCH",
+          "Lookup Functions: XLOOKUP, VLOOKUP, HLOOKUP, INDEX, MATCH",
+          "Text Functions: LEFT, RIGHT, MID, TEXT, CONCAT, TEXTJOIN",
+          "Date & Time Functions: TODAY, NOW, DATEDIF, EDATE, NETWORKDAYS",
+          "Practical: Solve real business scenarios using formulas."
+        ]
+      },
+      {
+        "week": "Module 3 (4 Hours)",
+        "title": "Data Cleaning & Data Preparation",
+        "topics": [
+          "Data Quality: Removing Duplicates, Handling Missing Data",
+          "Data Validation & Transformation: Split & Merge Columns, Text to Columns, Flash Fill, Find & Replace",
+          "Business Data Preparation: Customer Data, Sales Data, Employee Data",
+          "Practical: Clean messy datasets for analysis."
+        ]
+      },
+      {
+        "week": "Module 4 (5 Hours)",
+        "title": "Pivot Tables & Pivot Charts",
+        "topics": [
+          "Pivot Table Fundamentals, Creating Pivot Tables, Grouping Data, Calculated Fields",
+          "Pivot Charting: Dynamic Charts, Interactive Reports",
+          "Slicers & Timelines: Interactive Filtering, User-Friendly Dashboards",
+          "Practical: Analyze sales and operational datasets."
+        ]
+      },
+      {
+        "week": "Module 5 (5 Hours)",
+        "title": "Data Visualization & Dashboard Design",
+        "topics": [
+          "Chart Types: Bar, Line, Pie, Combo, Waterfall Charts",
+          "Dashboard Principles: KPI Design, Visual Hierarchy, Storytelling with Data",
+          "Interactive Dashboards: Slicers, Dynamic Charts, Linked Reports",
+          "Practical: Create an executive-level dashboard."
+        ]
+      },
+      {
+        "week": "Module 6 (5 Hours)",
+        "title": "Power Query & Data Automation",
+        "topics": [
+          "Introduction to Power Query: Importing Data, Transforming Data, Combining Data Sources",
+          "Data Automation: Refreshable Reports, Automated Data Cleaning",
+          "Business Applications: Monthly Reporting, Sales Analysis, HR Analytics",
+          "Practical: Automate repetitive reporting tasks."
+        ]
+      },
+      {
+        "week": "Module 7 (4 Hours)",
+        "title": "Business Analytics with Excel",
+        "topics": [
+          "Analytical Thinking: Trend Analysis, Growth Analysis, Variance Analysis",
+          "KPI Tracking: Sales KPIs, Marketing KPIs, Financial KPIs",
+          "Forecasting Basics: Trend Forecasting, What-If Analysis, Scenario Analysis",
+          "Practical: Generate business insights from datasets."
+        ]
+      },
+      {
+        "week": "Module 8 (2 Hours)",
+        "title": "AI & Modern Excel Features",
+        "topics": [
+          "Excel in the AI Era: Microsoft Copilot Overview",
+          "AI-Assisted Formula Generation & AI-Assisted Analysis",
+          "Productivity Workflows: Excel + AI, Reporting with AI Assistance",
+          "Responsible Usage Verification: Data Privacy, Accuracy Checks",
+          "Practical: Use AI to accelerate reporting and analysis."
+        ]
+      },
+      {
+        "week": "Capstone Project (6 Hours)",
+        "title": "Capstone Projects Selection",
+        "topics": [
+          "Project 1: Sales Performance Dashboard (KPI Tracking, Regional Analysis, Trend Analysis)",
+          "Project 2: HR Analytics Dashboard (Employee Metrics, Attendance Analysis, Attrition Insights)",
+          "Project 3: Financial Reporting Dashboard (Revenue Tracking, Expense Analysis, Profitability Reports)",
+          "Project 4: Marketing Performance Dashboard (Campaign Metrics, ROI Analysis, Lead Tracking)"
+        ]
+      }
+    ],
+    "pricingDetails": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Practice workbooks",
+        "Automated templates library",
+        "Live dashboard session",
+        "Certificate"
+      ]
+    },
+    "tools": [
+      "Excel",
+      "Power Query",
+      "Power BI",
+      "Microsoft Copilot"
+    ],
+    "faqs": [
+      {
+        "question": "Is Power Query covered?",
+        "answer": "Yes, Power Query is extensively covered for automated data cleaning workflows."
+      }
+    ],
+    "practical_hours": "30–40 Hours",
+    "pricing_details": {
+      "originalPrice": "₹6,999",
+      "discountedPrice": "₹1,249",
+      "emi": null,
+      "includes": [
+        "Practice workbooks",
+        "Automated templates library",
+        "Live dashboard session",
+        "Certificate"
+      ]
+    }
+  }
+]

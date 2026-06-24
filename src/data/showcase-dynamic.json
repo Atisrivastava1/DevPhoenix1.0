@@ -1,0 +1,98 @@
+[
+  {
+    "id": "showcase-static-1",
+    "title": "AI Automation Dashboard",
+    "description": "A centralized dashboard to manage and monitor autonomous AI agents executing cross-platform workflows.",
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800",
+    "tags": [
+      "React",
+      "n8n",
+      "OpenAI"
+    ],
+    "github_url": "https://github.com",
+    "live_url": "https://devphoenix.in",
+    "author_name": "Alumni Builder",
+    "program_name": "AI / Automation",
+    "created_at": "2026-06-24T19:47:50.256Z"
+  },
+  {
+    "id": "showcase-static-2",
+    "title": "Full Stack SaaS Platform",
+    "description": "A complete multi-tenant SaaS boilerplate with integrated billing, authentication, and user management.",
+    "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+    "tags": [
+      "Next.js",
+      "Stripe",
+      "PostgreSQL"
+    ],
+    "github_url": "https://github.com",
+    "live_url": "https://devphoenix.in",
+    "author_name": "Alumni Builder",
+    "program_name": "Web Development",
+    "created_at": "2026-06-24T19:47:50.256Z"
+  },
+  {
+    "id": "showcase-static-3",
+    "title": "Cloud Infrastructure Panel",
+    "description": "Visual dashboard for deploying and monitoring containerized applications across auto-scaling cloud infrastructure.",
+    "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
+    "tags": [
+      "AWS",
+      "Docker",
+      "Grafana"
+    ],
+    "github_url": "https://github.com",
+    "live_url": "https://devphoenix.in",
+    "author_name": "Alumni Builder",
+    "program_name": "Cloud / DevOps",
+    "created_at": "2026-06-24T19:47:50.256Z"
+  },
+  {
+    "id": "showcase-static-4",
+    "title": "Marketing Analytics Workspace",
+    "description": "Real-time visualization workspace for aggregating marketing campaign data across multiple advertising channels.",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+    "tags": [
+      "Vue.js",
+      "Google Analytics API",
+      "D3.js"
+    ],
+    "github_url": "https://github.com",
+    "live_url": "https://devphoenix.in",
+    "author_name": "Alumni Builder",
+    "program_name": "Marketing / Growth",
+    "created_at": "2026-06-24T19:47:50.256Z"
+  },
+  {
+    "id": "showcase-static-5",
+    "title": "Startup MVP Builder",
+    "description": "A functional minimum viable product showcasing rapid development techniques for new startup ideas.",
+    "image": "https://images.unsplash.com/photo-1556761175-5973dc0f32b7?auto=format&fit=crop&q=80&w=800",
+    "tags": [
+      "Framer",
+      "Supabase",
+      "React"
+    ],
+    "github_url": "https://github.com",
+    "live_url": "https://devphoenix.in",
+    "author_name": "Alumni Builder",
+    "program_name": "Entrepreneurship",
+    "created_at": "2026-06-24T19:47:50.256Z"
+  },
+  {
+    "id": "showcase-static-6",
+    "title": "DSA Interview Platform",
+    "description": "An interactive coding environment for practicing data structures and algorithms with real-time evaluation.",
+    "image": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800",
+    "tags": [
+      "Node.js",
+      "Monaco Editor",
+      "Docker"
+    ],
+    "github_url": "https://github.com",
+    "live_url": "https://devphoenix.in",
+    "author_name": "Alumni Builder",
+    "program_name": "DSA / Problem Solving",
+    "created_at": "2026-06-24T19:47:50.256Z"
+  }
+]
